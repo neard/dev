@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="neard-dev-commons" basedir=".">
+    
+    <tstamp><format property="current.date" pattern="yyyyMMdd" /></tstamp>
+    
+    <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-commons.xml"/>
+    <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-commons.xml"/>
+    
+    <property name="build-commons.properties" value="${neard-dev.path}/build/build-commons.properties" />
+    <echo message="Load build-commons.properties: ${neard-dev.path}/build/build-commons.properties" level="debug" /> 
+    <property file="${build-commons.properties}" />
+    
+    <macrodef name="replaceproperty">
+        <attribute name="src" />
+        <attribute name="dest" default="" />
+        <attribute name="replace" default="" />
+        <attribute name="with" default="" />
+        <sequential>
+            <loadresource property="@{dest}">
+                <propertyresource name="@{src}" />
+                <filterchain>
+                    <tokenfilter>
+                        <filetokenizer/>
+                        <replacestring from="@{replace}" to="@{with}" />
+                    </tokenfilter>
+                </filterchain>
+            </loadresource>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="sevenzip">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <attribute name="type" default="7z" />
+        <attribute name="compression" default="9" />
+        <sequential>
+            <exec executable="${lib.path}/7zip/7z.exe" failonerror="true">
+                <arg value="a" />
+                <arg value="-t@{type}" />
+                <arg value="@{dest}" />
+                <arg value="@{src}" />
+                <arg value="-mx@{compression}" />
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <!-- Default excludes -->
+    <defaultexcludes add="**/.gitignore" />
+    
+    <!-- Properties -->
+    <property name="bin.path" value="${neard-dev.path}/bin" />
+    <property name="lib.path" value="${neard-dev.path}/${lib.dir}" />
+    
+    <target name="init" unless="is.lib.loaded" description="Init">
+        <mkdir dir="${bin.path}" />
+        <mkdir dir="${lib.path}" />
+    </target>
+    
+    <target name="load.lib" unless="is.lib.loaded" depends="init, load.lib.antcontrib, load.sevenzip" description="Load libraries">
+        <var name="is.lib.loaded" value="true" />
+    </target>
+    
+    <target name="load.lib.antcontrib" unless="is.lib.loaded">
+        <echo message="Load ANT Contrib" />
+        <mkdir dir="${lib.path}/ant-contrib" />
+        <get dest="${lib.path}/ant-contrib/ant-contrib-1.0b3.jar" src="http://search.maven.org/remotecontent?filepath=ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" skipexisting="true" />
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <fileset dir="${lib.path}/ant-contrib">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+    
+    <!--target name="load.lib.antcompress" unless="is.lib.loaded">
+        <echo message="Load ANT Compress" />
+        <mkdir dir="${lib.path}/ant-compress" />
+        <get dest="${lib.path}/ant-compress/ant-compress-1.4.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ant/ant-compress/1.4/ant-compress-1.4.jar" skipexisting="true" />
+        <get dest="${lib.path}/ant-compress/commons-compress-1.7.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/commons/commons-compress/1.7/commons-compress-1.7.jar" skipexisting="true" />
+        <get dest="${lib.path}/ant-compress/xz-1.4.jar" src="http://search.maven.org/remotecontent?filepath=org/tukaani/xz/1.4/xz-1.4.jar" skipexisting="true" />
+        <taskdef resource="org/apache/ant/compress/antlib.xml">
+            <classpath>
+                <fileset dir="${lib.path}/ant-compress">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target-->
+    
+    <target name="load.sevenzip" unless="is.lib.loaded">
+        <echo message="Load 7zip" />
+        <get dest="${lib.path}/7zip.zip" src="http://www.7-zip.org/a/7z1514.exe" skipexisting="true" />
+        <delete dir="${lib.path}/7zip"/>
+        <unzip src="${lib.path}/7zip.zip" dest="${lib.path}/7zip" />
+    </target>
+    
+</project>

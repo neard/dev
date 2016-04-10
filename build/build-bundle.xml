@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="neard-dev-bundle" basedir=".">
+    
+    <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-bundle.xml" />
+    <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-bundle.xml" />
+        
+    <property name="build-bundle.properties" value="${neard-dev.path}/build/build-bundle.properties" />
+    <echo message="Load build-bundle.properties: ${neard-dev.path}/build/build-bundle.properties" level="debug" />
+    <property file="${build-bundle.properties}" />
+    
+    <!-- Import build-commons.xml -->
+    <import file="build-commons.xml" />
+    
+    <fail unless="bundle.name" message="Property 'bundle.name' must be setted before loading build-bundle.xml" />
+    <fail unless="bundle.type" message="Property 'bundle.type' must be setted before loading build-bundle.xml" />
+    
+    <!-- Properties -->
+    <property name="build.bundle.path" value="${build.path}/${bundle.type}" />
+    <property name="build.tmp.path" value="${build.path}/tmp" />
+    
+    <target name="build.version" depends="load.lib">
+        <var name="bundle.folder" unset="true" />
+        <var name="bundle.version" unset="true" />
+        <var name="bundle.dest" unset="true" />
+        <basename property="bundle.folder" file="${bundle.path}" />
+        <replaceproperty src="bundle.folder" dest="bundle.version" replace="${bundle.name}" with="" />
+        <property name="bundle.dest" value="${build.bundle.path}/${bundle.name}/neard-${bundle.name}-${bundle.version}-${bundle.release}" />
+        
+        <echo message="Building ${bundle.name} ${bundle.version}..." />
+        <delete dir="${build.tmp.path}/${bundle.name}${bundle.version}" />
+        <copy todir="${build.tmp.path}/${bundle.name}${bundle.version}">
+            <fileset dir="${bundle.path}" defaultexcludes="yes" />
+        </copy>
+        <echo message="Insert release version in ${build.tmp.path}/${bundle.name}${bundle.version}/neard.conf..." />
+        <copy file="${bundle.path}/neard.conf" tofile="${build.tmp.path}/${bundle.name}${bundle.version}/neard.conf" overwrite="true">
+            <filterset>
+                <filter token="RELEASE_VERSION" value="${bundle.release}" />
+            </filterset>
+        </copy>
+        
+        <mkdir dir="${build.bundle.path}/${bundle.name}" />
+        <if>
+            <equals arg1="${bundle.format}" arg2="7z" />
+            <then>
+                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.dest}.7z..." />
+                <!--sevenz destfile="${bundle.dest}.7z">
+                    <sevenzfileset dir="${build.tmp.path}/${bundle.name}${bundle.version}" prefix="${bundle.name}${bundle.version}" />
+                </sevenz-->
+                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.7z" />
+            </then>
+            <else>
+                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.dest}.zip..." />
+                <zip destfile="${bundle.dest}.zip">
+                    <zipfileset dir="${build.tmp.path}/${bundle.name}${bundle.version}" prefix="${bundle.name}${bundle.version}" />
+                </zip>
+            </else>
+        </if>
+    </target>
+    
+    <target name="release" depends="init, load.lib" description="Release">
+        <foreach target="build.version" param="bundle.path">
+            <path><dirset dir="${project.basedir}/bin" includes="*" /></path>
+        </foreach>
+    </target>
+    
+</project>
