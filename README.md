@@ -19,8 +19,8 @@ Java HotSpot(TM) Client VM (build 24.79-b02, mixed mode, sharing)
 
 [Apache Ant](http://ant.apache.org/) is a Java library and command-line tool that help building software.<br />
 You need at least Apache Ant 1.8.0.<br />
-You can download the binary zip archive of Apache Ant on the [Apache website](http://ant.apache.org/bindownload.cgi).
-Extract the archive on your computer (eg. `C:\apache-ant`) and add the path to `ant.bat` (eg. `C:\apache-ant\bin`)  to your environment variable PATH.
+You can download the binary zip archive of Apache Ant on the [Apache website](http://ant.apache.org/bindownload.cgi).<br />
+Extract the archive on your computer (eg. `C:\apache-ant`) and add the path to `ant.bat` (eg. `C:\apache-ant\bin`)  to your environment variable PATH.<br />
 To check if you have Apache Ant in your path, open a command prompt and type `ant -version` :
 
 ```
