@@ -26,7 +26,13 @@
         <replaceproperty src="bundle.folder" dest="bundle.version" replace="${bundle.name}" with="" />
         <property name="bundle.dest" value="${build.bundle.path}/${bundle.name}/neard-${bundle.name}-${bundle.version}-${bundle.release}" />
         
-        <echo message="Building ${bundle.name} ${bundle.version}..." />
+        <echo message="*** Release bundle " />
+        <echo message="* Name    : ${bundle.name} " />
+        <echo message="* Version : ${bundle.version} " />
+        <echo message="* Release : ${bundle.release} " />
+        <echo message="* Type    : ${bundle.type} " />
+        <echo message="* Format  : ${bundle.format} " />
+        
         <delete dir="${build.tmp.path}/${bundle.name}${bundle.version}" />
         <copy todir="${build.tmp.path}/${bundle.name}${bundle.version}">
             <fileset dir="${bundle.path}" defaultexcludes="yes" />

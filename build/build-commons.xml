@@ -34,7 +34,7 @@
         <attribute name="type" default="7z" />
         <attribute name="compression" default="9" />
         <sequential>
-            <exec executable="${lib.path}/7zip/7z.exe" failonerror="true">
+            <exec executable="${tool.7zip.path}/7z.exe" failonerror="true">
                 <arg value="a" />
                 <arg value="-t@{type}" />
                 <arg value="@{dest}" />
@@ -50,6 +50,8 @@
     <!-- Properties -->
     <property name="bin.path" value="${neard-dev.path}/bin" />
     <property name="lib.path" value="${neard-dev.path}/${lib.dir}" />
+    <property name="tools.path" value="${neard-dev.path}/${tools.dir}" />
+    <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}" />
     
     <target name="init" unless="is.lib.loaded" description="Init">
         <mkdir dir="${bin.path}" />
@@ -90,9 +92,14 @@
     
     <target name="load.sevenzip" unless="is.lib.loaded">
         <echo message="Load 7zip" />
-        <get dest="${lib.path}/7zip.zip" src="http://www.7-zip.org/a/7z1514.exe" skipexisting="true" />
+        <!--get dest="${lib.path}/7zip.zip" src="http://www.7-zip.org/a/7za920.zip" skipexisting="true" />
         <delete dir="${lib.path}/7zip"/>
-        <unzip src="${lib.path}/7zip.zip" dest="${lib.path}/7zip" />
+        <unzip src="${lib.path}/7zip.zip" dest="${lib.path}/7zip" /-->
+        <fail message="Missing 7z.exe file in ${tool.7zip.path}">
+            <condition>
+                <not><available file="${tool.7zip.path}/7z.exe" /></not>
+            </condition>
+        </fail>
     </target>
     
 </project>
