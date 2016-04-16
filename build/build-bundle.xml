@@ -64,9 +64,26 @@
     </target>
     
     <target name="release" depends="init, load.lib" description="Release">
-        <foreach target="build.version" param="bundle.path">
-            <path><dirset dir="${project.basedir}/bin" includes="*" /></path>
-        </foreach>
+        <input message="Please enter the bundle's name to release (eg. apache2.4.20) or 'all' for every versions: " addproperty="input.bundle" />
+        <if>
+            <equals arg1="${input.bundle}" arg2="all" />
+            <then>
+                <foreach target="build.version" param="bundle.path">
+                    <path><dirset dir="${project.basedir}/bin" includes="*" /></path>
+                </foreach>
+            </then>
+            <elseif>
+                <available file="${project.basedir}/bin/${input.bundle}" type="dir"/>
+                <then>
+                    <antcall target="build.version">
+                        <param name="bundle.path" value="${project.basedir}/bin/${input.bundle}" />
+                    </antcall>
+                </then>
+            </elseif>
+            <else>
+                <fail message="Invalid bundle's name"/>
+            </else>
+        </if>
     </target>
     
 </project>
