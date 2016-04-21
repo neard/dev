@@ -10,6 +10,15 @@
     <echo message="Load build-commons.properties: ${neard-dev.path}/build/build-commons.properties" level="debug" /> 
     <property file="${build-commons.properties}" />
     
+    <scriptdef name="randomstring" language="javascript">
+        <attribute name="property" />
+        <![CDATA[
+        importClass(java.security.SecureRandom);
+        importClass(java.math.BigInteger);
+        project.setProperty(attributes.get("property"), new BigInteger(130, new SecureRandom()).toString(32));
+        ]]>
+    </scriptdef>
+    
     <macrodef name="replaceproperty">
         <attribute name="src" />
         <attribute name="dest" default="" />
@@ -32,30 +41,134 @@
         <attribute name="src" />
         <attribute name="dest" />
         <attribute name="type" default="7z" />
-        <attribute name="compression" default="9" />
         <sequential>
             <exec executable="${tool.7zip.path}/7z.exe" failonerror="true">
                 <arg value="a" />
                 <arg value="-t@{type}" />
                 <arg value="@{dest}" />
                 <arg value="@{src}" />
-                <arg value="-mx@{compression}" />
+                <arg value="-m0=LZMA2" />
+                <arg value="-mx9" />
+                <arg value="-mmt2" />
             </exec>
         </sequential>
     </macrodef>
     
+    <macrodef name="unsevenzip">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <sequential>
+            <exec executable="${tool.7zip.path}/7z.exe" failonerror="true">
+                <arg value="x" />
+                <arg value="@{src}" />
+                <arg value="-o@{dest}" />
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="getbundle">
+        <attribute name="releasesurl" />
+        <attribute name="version" />
+        <attribute name="dest" />
+        <sequential>
+            <echo message="** Getbundle" />
+            <echo message="* Releases url : @{releasesurl}" />
+            <echo message="* Version      : @{version}" />
+            <echo message="* Destination  : @{dest}" />
+            
+            <var name="@{version}" unset="true" />
+            <var name="getbundle.filename" unset="true" />
+            
+            <property url="@{releasesurl}" />
+            <basename property="getbundle.filename" file="${@{version}}" />
+            <get dest="${tmp.path}/${getbundle.filename}" src="${@{version}}" skipexisting="true" />
+            
+            <echo message="Extracting ${getbundle.filename} to @{dest}..." />
+            <if>
+                <matches string="${getbundle.filename}" pattern="7z$" />
+                <then>
+                    <unsevenzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
+                </then>
+                <else>
+                    <unzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="phpdev">
+        <attribute name="action" />
+        <attribute name="arg" default="" />
+        <attribute name="workingdir" default="${phpdev.path}" />
+        <attribute name="returnProperty" default="" />
+        <sequential>
+            <var name="phpdev.output" unset="true" />
+            <echo message="** PHPDev" />
+            <echo message="* Action : @{action}" />
+            <echo message="* Arg    : @{arg}" />
+            
+            <if>
+                <equals arg1="@{returnProperty}" arg2="" />
+                <then>
+                    <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" failonerror="false">
+                        <arg value="bootstrap.php" />
+                        <arg value="@{action}" />
+                        <arg value="@{arg}" />
+                    </exec>
+                </then>
+                <else>
+                    <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" outputproperty="@{returnProperty}" failonerror="false">
+                        <arg value="bootstrap.php" />
+                        <arg value="@{action}" />
+                        <arg value="@{arg}" />
+                    </exec>
+                    <echo message="${@{returnProperty}}" />
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="assertdir">
+        <attribute name="dir" />
+        <sequential>
+            <fail message="Directory '@{dir}' does not exist">
+                <condition><not><available file="@{dir}" type="dir" /></not></condition>
+            </fail>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="assertfile">
+        <attribute name="file" />
+        <sequential>
+            <fail message="File '@{file}' does not exist">
+                <condition><not><available file="@{file}" type="file" /></not></condition>
+            </fail>
+        </sequential>
+    </macrodef>
+    
     <!-- Default excludes -->
+    <defaultexcludes add="**/.github" />
+    <defaultexcludes add="**/.github/**" />
+    <defaultexcludes add="**/.settings" />
+    <defaultexcludes add="**/.settings/**" />
+    <defaultexcludes add="**/.buildpath" />
+    <defaultexcludes add="**/.gitattributes" />
     <defaultexcludes add="**/.gitignore" />
+    <defaultexcludes add="**/.project" />
     
     <!-- Properties -->
-    <property name="bin.path" value="${neard-dev.path}/bin" />
+    <property name="bin.path" value="${neard-dev.path}/${bin.dir}" />
     <property name="lib.path" value="${neard-dev.path}/${lib.dir}" />
+    <property name="tmp.path" value="${neard-dev.path}/${tmp.dir}" />
+    <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}" />
     <property name="tools.path" value="${neard-dev.path}/${tools.dir}" />
     <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}" />
+    <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}" />
     
     <target name="init" unless="is.lib.loaded" description="Init">
         <mkdir dir="${bin.path}" />
         <mkdir dir="${lib.path}" />
+        <mkdir dir="${tmp.path}" />
     </target>
     
     <target name="load.lib" unless="is.lib.loaded" depends="init, load.lib.antcontrib, load.sevenzip" description="Load libraries">

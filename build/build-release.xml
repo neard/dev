@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="neard-dev-release" basedir=".">
+    
+    <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-bundle.xml" />
+    <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-bundle.xml" />
+        
+    <property name="build-release.properties" value="${neard-dev.path}/build/build-release.properties" />
+    <echo message="Load build-release.properties: ${neard-dev.path}/build/build-release.properties" level="debug" />
+    <property file="${build-release.properties}" />
+    
+    <!-- Import build-commons.xml -->
+    <import file="build-commons.xml" />
+    
+    <!-- Properties -->
+    <property name="build.release.path" value="${build.path}/releases" />
+    <property name="build.tmp.path" value="${build.path}/tmp" />
+</project>

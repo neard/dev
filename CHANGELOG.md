@@ -1,5 +1,12 @@
 # Changelog
 
+## r4 (2016/04/22)
+
+* Add task to build Neard
+* Add task to launch Neard
+* Add task to check languages files 
+* Add PHP tool
+
 ## r3 (2016/04/17)
 
 * Add input in bundle release task to choose one or every versions to build for a bundle
