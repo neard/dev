@@ -1,5 +1,9 @@
 # Changelog
 
+## r5 (2016/04/30)
+
+* Add Drush, PHPUnit and WP-CLI releases infos
+
 ## r4 (2016/04/22)
 
 * Add task to build Neard
