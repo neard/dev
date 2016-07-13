@@ -154,6 +154,7 @@
     <defaultexcludes add="**/.buildpath" />
     <defaultexcludes add="**/.gitattributes" />
     <defaultexcludes add="**/.gitignore" />
+    <defaultexcludes add="**/.gitkeep" />
     <defaultexcludes add="**/.project" />
     
     <!-- Properties -->
