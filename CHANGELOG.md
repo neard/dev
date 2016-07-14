@@ -1,5 +1,10 @@
 # Changelog
 
+## r6 (2016/07/14)
+
+* Add Notepad2-mod, Memcached and phpMemAdmin releases infos
+* Add .gitkeep to default excludes
+
 ## r5 (2016/04/30)
 
 * Add Drush, PHPUnit and WP-CLI releases infos
