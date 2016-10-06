@@ -1,3 +1,5 @@
+# Neard Dev
+
 This a sub-repo of [Neard project](https://github.com/crazy-max/neard) involving development tools for everyone who wants to contribute!
 
 ## Requirements
