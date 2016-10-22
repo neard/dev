@@ -165,6 +165,8 @@
     <property name="tools.path" value="${neard-dev.path}/${tools.dir}" />
     <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}" />
     <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}" />
+    <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe" />
+    <property name="innosetup.path" location="${lib.path}/innosetup" />
     
     <target name="init" unless="is.lib.loaded" description="Init">
         <mkdir dir="${bin.path}" />
@@ -172,7 +174,7 @@
         <mkdir dir="${tmp.path}" />
     </target>
     
-    <target name="load.lib" unless="is.lib.loaded" depends="init, load.lib.antcontrib, load.sevenzip" description="Load libraries">
+    <target name="load.lib" unless="is.lib.loaded" depends="init, load.lib.antcontrib, load.lib.sevenzip, load.lib.innosetup" description="Load libraries">
         <var name="is.lib.loaded" value="true" />
     </target>
     
@@ -204,7 +206,7 @@
         </taskdef>
     </target-->
     
-    <target name="load.sevenzip" unless="is.lib.loaded">
+    <target name="load.lib.sevenzip" unless="is.lib.loaded">
         <echo message="Load 7zip" />
         <!--get dest="${lib.path}/7zip.zip" src="http://www.7-zip.org/a/7za920.zip" skipexisting="true" />
         <delete dir="${lib.path}/7zip"/>
@@ -212,6 +214,39 @@
         <fail message="Missing 7z.exe file in ${tool.7zip.path}">
             <condition>
                 <not><available file="${tool.7zip.path}/7z.exe" /></not>
+            </condition>
+        </fail>
+    </target>
+    
+    <target name="load.lib.innoextract" unless="is.lib.loaded">
+        <echo message="Load innoextract"/>
+        <get dest="${lib.path}/innoextract.zip" src="${innoextract.url}" skipexisting="true"/>
+        <if>
+          <not><available file="${lib.path}/innoextract" type="dir" /></not>
+          <then>
+              <unzip src="${lib.path}/innoextract.zip" dest="${lib.path}/innoextract"/>
+          </then>
+        </if>
+    </target>
+    
+    <target name="load.lib.innosetup" depends="load.lib.innoextract" unless="is.lib.loaded">
+        <echo message="Load InnoSetup"/>
+        <get dest="${lib.path}/innosetup.exe" src="${innosetup.url}" skipexisting="true"/>
+        <if>
+          <not><available file="${innosetup.path}/app" type="dir" /></not>
+          <then>
+              <exec executable="${innoextract}">
+                  <arg value="-d"/>
+                  <arg value="${innosetup.path}"/>
+                  <arg value="${lib.path}/innosetup.exe"/>
+              </exec>
+          </then>
+        </if>
+        <fail message="File ${innosetup.path}/app/ISCC.exe not found">
+            <condition>
+                <not>
+                    <available file="${innosetup.path}/app/ISCC.exe" />
+                </not>
             </condition>
         </fail>
     </target>
