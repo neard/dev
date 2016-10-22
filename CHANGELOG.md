@@ -1,5 +1,9 @@
 # Changelog
 
+## r7 (2016/10/22)
+
+* Add build-misc and innosetup / innoextract libs
+
 ## r6 (2016/07/14)
 
 * Add Notepad2-mod, Memcached and phpMemAdmin releases infos
