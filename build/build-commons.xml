@@ -40,17 +40,39 @@
     <macrodef name="sevenzip">
         <attribute name="src" />
         <attribute name="dest" />
-        <attribute name="type" default="7z" />
+        <attribute name="format" default="7z" />
         <sequential>
-            <exec executable="${tool.7zip.path}/7z.exe" failonerror="true">
-                <arg value="a" />
-                <arg value="-t@{type}" />
-                <arg value="@{dest}" />
-                <arg value="@{src}" />
-                <arg value="-m0=LZMA2" />
-                <arg value="-mx9" />
-                <arg value="-mmt2" />
-            </exec>
+            <if>
+                <equals arg1="@{format}" arg2="7z" />
+                <then>
+                    <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+                        <arg value="a" />
+                        <arg value="-t7z" />
+                        <arg value="@{dest}" />
+                        <arg value="@{src}" />
+                        <arg value="-m0=LZMA2" />
+                        <arg value="-mx9" />
+                        <arg value="-mmt2" />
+                    </exec>
+                </then>
+            <elseif>
+                <equals arg1="@{format}" arg2="zip" />
+                <then>
+                    <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+                        <arg value="a" />
+                        <arg value="-mm=Deflate" />
+                        <arg value="-mfb=258" />
+                        <arg value="-mpass=15" />
+                        <arg value="-r" />
+                        <arg value="@{dest}" />
+                        <arg value="@{src}" />
+                    </exec>
+                </then>
+            </elseif>
+            <else>
+                <fail message="Unknown format @{format}..."/>
+            </else>
+            </if>
         </sequential>
     </macrodef>
     
@@ -58,7 +80,7 @@
         <attribute name="src" />
         <attribute name="dest" />
         <sequential>
-            <exec executable="${tool.7zip.path}/7z.exe" failonerror="true">
+            <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
                 <arg value="x" />
                 <arg value="@{src}" />
                 <arg value="-o@{dest}" />
@@ -208,12 +230,9 @@
     
     <target name="load.lib.sevenzip" unless="is.lib.loaded">
         <echo message="Load 7zip" />
-        <!--get dest="${lib.path}/7zip.zip" src="http://www.7-zip.org/a/7za920.zip" skipexisting="true" />
-        <delete dir="${lib.path}/7zip"/>
-        <unzip src="${lib.path}/7zip.zip" dest="${lib.path}/7zip" /-->
-        <fail message="Missing 7z.exe file in ${tool.7zip.path}">
+        <fail message="Missing 7za.exe file in ${tool.7zip.path}">
             <condition>
-                <not><available file="${tool.7zip.path}/7z.exe" /></not>
+                <not><available file="${tool.7zip.path}/7za.exe" /></not>
             </condition>
         </fail>
     </target>

@@ -6,4 +6,5 @@
 /*.launch
 
 # Neard
+/.dev
 /bin

@@ -53,13 +53,15 @@
                 <!--sevenz destfile="${bundle.dest}.7z">
                     <sevenzfileset dir="${build.tmp.path}/${bundle.name}${bundle.version}" prefix="${bundle.name}${bundle.version}" />
                 </sevenz-->
-                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.7z" />
+                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.7z" format="7z" />
             </then>
             <else>
+                <delete file="${bundle.dest}.zip" />
                 <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.dest}.zip..." />
-                <zip destfile="${bundle.dest}.zip" update="false">
+                <!--zip destfile="${bundle.dest}.zip" update="false">
                     <zipfileset dir="${build.tmp.path}/${bundle.name}${bundle.version}" prefix="${bundle.name}${bundle.version}" />
-                </zip>
+                </zip-->
+                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.zip" format="zip" />
             </else>
         </if>
     </target>
