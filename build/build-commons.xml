@@ -171,6 +171,7 @@
     <!-- Default excludes -->
     <defaultexcludes add="**/.github" />
     <defaultexcludes add="**/.github/**" />
+    <defaultexcludes add="**/.idea" />
     <defaultexcludes add="**/.settings" />
     <defaultexcludes add="**/.settings/**" />
     <defaultexcludes add="**/.buildpath" />
