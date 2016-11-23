@@ -55,23 +55,23 @@
                         <arg value="-mmt2" />
                     </exec>
                 </then>
-            <elseif>
-                <equals arg1="@{format}" arg2="zip" />
-                <then>
-                    <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
-                        <arg value="a" />
-                        <arg value="-mm=Deflate" />
-                        <arg value="-mfb=258" />
-                        <arg value="-mpass=15" />
-                        <arg value="-r" />
-                        <arg value="@{dest}" />
-                        <arg value="@{src}" />
-                    </exec>
-                </then>
-            </elseif>
-            <else>
-                <fail message="Unknown format @{format}..."/>
-            </else>
+                <elseif>
+                    <equals arg1="@{format}" arg2="zip" />
+                    <then>
+                        <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+                            <arg value="a" />
+                            <arg value="-mm=Deflate" />
+                            <arg value="-mfb=258" />
+                            <arg value="-mpass=15" />
+                            <arg value="-r" />
+                            <arg value="@{dest}" />
+                            <arg value="@{src}" />
+                        </exec>
+                    </then>
+                </elseif>
+                <else>
+                    <fail message="Unknown format: @{format}"/>
+                </else>
             </if>
         </sequential>
     </macrodef>
