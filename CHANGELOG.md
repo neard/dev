@@ -1,5 +1,11 @@
 # Changelog
 
+## r8 (2016/11/09)
+
+* Add Python, Ruby and SVN releases infos
+* Use 7zip to create zip archives
+* Update 7zip to 16.04
+
 ## r7 (2016/10/22)
 
 * Add build-misc and innosetup / innoextract libs
