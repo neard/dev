@@ -198,14 +198,17 @@
         <mkdir dir="${tmp.path}" />
     </target>
     
-    <target name="load.lib" unless="is.lib.loaded" depends="init, load.lib.antcontrib, load.lib.sevenzip, load.lib.innosetup" description="Load libraries">
+    <target name="load.lib" unless="is.lib.loaded" description="Load libraries" depends="init,
+            load.lib.antcontrib,
+            load.lib.sevenzip,
+            load.lib.innosetup">
         <var name="is.lib.loaded" value="true" />
     </target>
     
     <target name="load.lib.antcontrib" unless="is.lib.loaded">
         <echo message="Load ANT Contrib" />
         <mkdir dir="${lib.path}/ant-contrib" />
-        <get dest="${lib.path}/ant-contrib/ant-contrib-1.0b3.jar" src="http://search.maven.org/remotecontent?filepath=ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" skipexisting="true" />
+        <get dest="${lib.path}/ant-contrib/ant-contrib.jar" src="${antcontrib.url}" skipexisting="true" />
         <taskdef resource="net/sf/antcontrib/antlib.xml">
             <classpath>
                 <fileset dir="${lib.path}/ant-contrib">
