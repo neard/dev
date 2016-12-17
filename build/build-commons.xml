@@ -180,6 +180,9 @@
     <defaultexcludes add="**/.gitignore" />
     <defaultexcludes add="**/.gitkeep" />
     <defaultexcludes add="**/.project" />
+    <defaultexcludes add="**/.project" />
+    <defaultexcludes add="**/.styleci.yml" />
+    <defaultexcludes add="**/.travis.yml" />
     
     <!-- Properties -->
     <property name="bin.path" value="${neard-dev.path}/${bin.dir}" />
@@ -217,21 +220,6 @@
             </classpath>
         </taskdef>
     </target>
-    
-    <!--target name="load.lib.antcompress" unless="is.lib.loaded">
-        <echo message="Load ANT Compress" />
-        <mkdir dir="${lib.path}/ant-compress" />
-        <get dest="${lib.path}/ant-compress/ant-compress-1.4.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ant/ant-compress/1.4/ant-compress-1.4.jar" skipexisting="true" />
-        <get dest="${lib.path}/ant-compress/commons-compress-1.7.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/commons/commons-compress/1.7/commons-compress-1.7.jar" skipexisting="true" />
-        <get dest="${lib.path}/ant-compress/xz-1.4.jar" src="http://search.maven.org/remotecontent?filepath=org/tukaani/xz/1.4/xz-1.4.jar" skipexisting="true" />
-        <taskdef resource="org/apache/ant/compress/antlib.xml">
-            <classpath>
-                <fileset dir="${lib.path}/ant-compress">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
-        </taskdef>
-    </target-->
     
     <target name="load.lib.sevenzip" unless="is.lib.loaded">
         <echo message="Load 7zip" />
