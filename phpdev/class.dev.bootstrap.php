@@ -12,7 +12,7 @@ class DevBootstrap
     public function __construct()
     {
         $this->neardPath = DevUtils::formatUnixPath(realpath('../../neard'));
-        if (!file_exists($this->neardPath . '/neard.exe')) {
+        if (!file_exists($this->neardPath . '/core/bootstrap.php')) {
             throw new Exception("Neard repository not found in " . $this->neardPath);
         }
         
