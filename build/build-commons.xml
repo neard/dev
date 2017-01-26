@@ -88,6 +88,38 @@
         </sequential>
     </macrodef>
     
+    <macrodef name="hashfile">
+        <attribute name="file" />
+        <sequential>
+            <var name="hashfile.filename" unset="true" />
+            <basename property="hashfile.filename" file="@{file}" />
+            <var name="hashfile.xml" value="${tmp.path}/${hashfile.filename}.xml" />
+            
+            <echo message="** Hashfile" />
+            <echo message="* File : @{file}" />
+            <echo message="* XML : ${hashfile.xml}" />
+            
+            <exec executable="${hashmyfiles}" failonerror="true">
+                <arg value="/file" />
+                <arg value="@{file}" />
+                <arg value="/sxml" />
+                <arg value="${hashfile.xml}" />
+            </exec>
+            
+            <fixcrlf file="${hashfile.xml}" eol="lf" encoding="UTF-16LE" outputencoding="UTF-8" />
+            <xmlproperty file="${hashfile.xml}" collapseAttributes="true" />
+            <echo message="* Filename : ${hash_list.item.filename}" />
+            <echo message="* MD5 : ${hash_list.item.md5}" />
+            <echo message="* SHA1 : ${hash_list.item.sha1}" />
+            <echo message="* SHA-256 : ${hash_list.item.sha-256}" />
+            <echo message="* SHA-512 : ${hash_list.item.sha-512}" />
+            <echo file="@{file}.md5" force="true">${hash_list.item.md5} ${hash_list.item.filename}</echo>
+            <echo file="@{file}.sha1" force="true">${hash_list.item.sha1} ${hash_list.item.filename}</echo>
+            <echo file="@{file}.sha256" force="true">${hash_list.item.sha-256} ${hash_list.item.filename}</echo>
+            <echo file="@{file}.sha512" force="true">${hash_list.item.sha-512} ${hash_list.item.filename}</echo>
+        </sequential>
+    </macrodef>
+    
     <macrodef name="getbundle">
         <attribute name="releasesurl" />
         <attribute name="version" />
@@ -194,6 +226,7 @@
     <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}" />
     <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe" />
     <property name="innosetup.path" location="${lib.path}/innosetup" />
+    <property name="hashmyfiles" location="${lib.path}/hashmyfiles/HashMyFiles.exe" />
     
     <target name="init" unless="is.lib.loaded" description="Init">
         <mkdir dir="${bin.path}" />
@@ -204,7 +237,8 @@
     <target name="load.lib" unless="is.lib.loaded" description="Load libraries" depends="init,
             load.lib.antcontrib,
             load.lib.sevenzip,
-            load.lib.innosetup">
+            load.lib.innosetup,
+            load.lib.hashmyfiles">
         <var name="is.lib.loaded" value="true" />
     </target>
     
@@ -260,6 +294,24 @@
                     <available file="${innosetup.path}/app/ISCC.exe" />
                 </not>
             </condition>
+        </fail>
+    </target>
+  
+    <target name="load.lib.hashmyfiles" unless="is.lib.loaded">
+        <echo message="Load hashmyfiles"/>
+        <get dest="${lib.path}/hashmyfiles.zip" src="${hashmyfiles.url}" skipexisting="true"/>
+        <if>
+          <not><available file="${lib.path}/hashmyfiles" type="dir" /></not>
+          <then>
+              <unzip src="${lib.path}/hashmyfiles.zip" dest="${lib.path}/hashmyfiles"/>
+          </then>
+        </if>
+        <fail message="File ${hashmyfiles} not found">
+          <condition>
+            <not>
+              <available file="${hashmyfiles}" />
+            </not>
+          </condition>
         </fail>
     </target>
     

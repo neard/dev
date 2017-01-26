@@ -1,5 +1,9 @@
 # Changelog
 
+## r9 (2017/01/26)
+
+* Create checksum for downloads (Issue #211)
+
 ## r8 (2016/11/09)
 
 * Add Python, Ruby and SVN releases infos
