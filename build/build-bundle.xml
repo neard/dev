@@ -21,10 +21,12 @@
     <target name="build.version" depends="load.lib">
         <var name="bundle.folder" unset="true" />
         <var name="bundle.version" unset="true" />
-        <var name="bundle.dest" unset="true" />
+        <var name="bundle.destdir" unset="true" />
+        <var name="bundle.destfile" unset="true" />
         <basename property="bundle.folder" file="${bundle.path}" />
         <replaceproperty src="bundle.folder" dest="bundle.version" replace="${bundle.name}" with="" />
-        <property name="bundle.dest" value="${build.bundle.path}/${bundle.name}/neard-${bundle.name}-${bundle.version}-${bundle.release}" />
+        <property name="bundle.destdir" value="${build.bundle.path}/${bundle.name}/${bundle.release}" />
+        <property name="bundle.destfile" value="${bundle.destdir}/neard-${bundle.name}-${bundle.version}-${bundle.release}" />
         
         <echo message="*** Release bundle " />
         <echo message="* Name    : ${bundle.name} " />
@@ -44,20 +46,21 @@
             </filterset>
         </copy>
         
+        <mkdir dir="${bundle.destdir}" />
         <mkdir dir="${build.bundle.path}/${bundle.name}" />
         <if>
             <equals arg1="${bundle.format}" arg2="7z" />
             <then>
-                <delete file="${bundle.dest}.7z" />
-                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.dest}.7z..." />
-                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.7z" format="7z" />
-                <hashfile file="${bundle.dest}.7z" />
+                <delete file="${bundle.destfile}.7z" />
+                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.destfile}.7z..." />
+                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.7z" format="7z" />
+                <hashfile file="${bundle.destfile}.7z" />
             </then>
             <else>
-                <delete file="${bundle.dest}.zip" />
-                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.dest}.zip..." />
-                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.dest}.zip" format="zip" />
-                <hashfile file="${bundle.dest}.zip" />
+                <delete file="${bundle.destfile}.zip" />
+                <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.destfile}.zip..." />
+                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.zip" format="zip" />
+                <hashfile file="${bundle.destfile}.zip" />
             </else>
         </if>
     </target>
