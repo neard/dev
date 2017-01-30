@@ -119,6 +119,19 @@
             <echo file="@{file}.sha512" force="true">${hash_list.item.sha-512} ${hash_list.item.filename}</echo>
         </sequential>
     </macrodef>
+  
+    <macrodef name="hashfiles">
+        <attribute name="folder" />
+        <sequential>
+            <foreach target="hashfile" param="file">
+              <fileset dir="@{folder}"  excludes="
+                **/*.md5,
+                **/*.sha1,
+                **/*.sha256,
+                **/*.sha512"/>
+            </foreach>
+        </sequential>
+    </macrodef>
     
     <macrodef name="getbundle">
         <attribute name="releasesurl" />
@@ -313,6 +326,28 @@
             </not>
           </condition>
         </fail>
+    </target>
+  
+    <target name="hashfile">
+        <hashfile file="${file}"/>
+    </target>
+  
+    <target name="hash.all" depends="hash.apps, hash.bins, hash.tools, hash.releases"/>
+  
+    <target name="hash.apps" depends="load.lib">
+        <hashfiles folder="${build.path}/apps"/>
+    </target>
+  
+    <target name="hash.bins" depends="load.lib">
+        <hashfiles folder="${build.path}/bins"/>
+    </target>
+  
+    <target name="hash.tools" depends="load.lib">
+        <hashfiles folder="${build.path}/tools"/>
+    </target>
+  
+    <target name="hash.releases" depends="load.lib">
+        <hashfiles folder="${build.path}/releases"/>
     </target>
     
 </project>
