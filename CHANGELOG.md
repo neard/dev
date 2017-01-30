@@ -1,8 +1,11 @@
 # Changelog
 
-## r9 (2017/01/26)
+## r9 (2017/01/30)
 
 * Create checksum for downloads (Issue #211)
+* Update bootstrap dev
+* Update default excludes
+* Update libs links
 
 ## r8 (2016/11/09)
 
