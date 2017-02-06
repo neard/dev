@@ -15,17 +15,84 @@
     <fail unless="bundle.type" message="Property 'bundle.type' must be setted before loading build-bundle.xml" />
     
     <!-- Properties -->
-    <property name="build.bundle.path" value="${build.path}/${bundle.type}" />
-    <property name="build.tmp.path" value="${build.path}/tmp" />
+    <property name="bundle.release.path" value="${build.path}/${bundle.type}" />
+    <property name="bundle.tmp.build.path" value="${build.tmp.path}/bundles_build/${bundle.name}" />
+    <property name="bundle.tmp.prep.path" value="${build.tmp.path}/bundles_prep/${bundle.name}" />
+    <property name="bundle.tmp.src.path" value="${build.tmp.path}/bundles_src" />
+  
+    <macrodef name="getbundlesrc">
+      <attribute name="name" />
+      <attribute name="version" />
+      <attribute name="propSrcDest" />
+      <attribute name="propSrcFilename" />
+      <sequential>
+        <echo message="** Getbundle Src" />
+        <echo message="* Name        : @{name}" />
+        <echo message="* Version     : @{version}" />
+        
+        <var name="@{propSrcDest}" unset="true"/>
+        <var name="@{propSrcFilename}" unset="true"/>
+        <var name="getbundlesrc.src" unset="true" />
+        <var name="getbundlesrc.url" unset="true" />
+        <var name="getbundlesrc.filename" unset="true" />
+        <var name="getbundlesrc.basename" unset="true" />
+        <var name="getbundlesrc.folder" unset="true" />
+        <var name="getbundlesrc.tmp" unset="true" />
+        
+        <propertyregex property="getbundlesrc.src" input="${bundle.srcurl}" regexp="@module@" replace="@{name}" global="true" />
+        <echo message="* Src         : ${getbundlesrc.src}" />
+        <property url="${getbundlesrc.src}" />
+        
+        <property name="getbundlesrc.url" value="${@{version}}" />
+        <basename property="getbundlesrc.filename" file="${getbundlesrc.url}" />
+        <propertyregex property="getbundlesrc.basename" input="${getbundlesrc.filename}" regexp="(.*)\.(.*)" select="\1"/>
+        <property name="getbundlesrc.folder" value="@{name}@{version}" />
+        <property name="getbundlesrc.tmp" value="${bundle.tmp.src.path}/@{name}" />
+        <property name="getbundlesrc.dest" value="${getbundlesrc.tmp}/${getbundlesrc.folder}" />
+        
+        <echo message="* Url         : ${getbundlesrc.url}" />
+        <echo message="* Filename    : ${getbundlesrc.filename}" />
+        <echo message="* Destination : ${getbundlesrc.dest}" />
+        
+        <delete dir="${getbundlesrc.dest}" />
+        <mkdir dir="${getbundlesrc.dest}" />
+        <get dest="${getbundlesrc.tmp}/${getbundlesrc.filename}" src="${getbundlesrc.url}" skipexisting="true" />
+        <property name="@{propSrcDest}" value="${getbundlesrc.dest}"/>
+        <property name="@{propSrcFilename}" value="${getbundlesrc.filename}"/>
+        <echo message="Processing ${getbundlesrc.filename}..." />
+        <if>
+          <matches string="${getbundlesrc.filename}" pattern="7z$" />
+          <then>
+            <unsevenzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}" />
+          </then>
+          <elseif>
+            <matches string="${getbundlesrc.filename}" pattern="zip$" />
+            <then>
+              <unzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}" />
+            </then>
+          </elseif>
+          <elseif>
+            <matches string="${getbundlesrc.filename}" pattern="tar\.gz$" />
+            <then>
+              <gunzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}" />
+              <untar src="${getbundlesrc.dest}/${getbundlesrc.basename}" dest="${getbundlesrc.dest}"/>
+            </then>
+          </elseif>
+          <else>
+            <copy file="${getbundlesrc.tmp}/${getbundlesrc.filename}" todir="${getbundlesrc.dest}"/>
+          </else>
+        </if>
+      </sequential>
+    </macrodef>
     
-    <target name="build.version" depends="load.lib">
+    <target name="release.version">
         <var name="bundle.folder" unset="true" />
         <var name="bundle.version" unset="true" />
         <var name="bundle.destdir" unset="true" />
         <var name="bundle.destfile" unset="true" />
         <basename property="bundle.folder" file="${bundle.path}" />
         <replaceproperty src="bundle.folder" dest="bundle.version" replace="${bundle.name}" with="" />
-        <property name="bundle.destdir" value="${build.bundle.path}/${bundle.name}/${bundle.release}" />
+        <property name="bundle.destdir" value="${bundle.release.path}/${bundle.name}/${bundle.release}" />
         <property name="bundle.destfile" value="${bundle.destdir}/neard-${bundle.name}-${bundle.version}-${bundle.release}" />
         
         <echo message="*** Release bundle " />
@@ -35,57 +102,90 @@
         <echo message="* Type    : ${bundle.type} " />
         <echo message="* Format  : ${bundle.format} " />
         
-        <delete dir="${build.tmp.path}/${bundle.name}${bundle.version}" />
-        <copy todir="${build.tmp.path}/${bundle.name}${bundle.version}">
+        <mkdir dir="${bundle.tmp.build.path}" />
+        <delete dir="${bundle.tmp.build.path}/${bundle.name}${bundle.version}" />
+        <copy todir="${bundle.tmp.build.path}/${bundle.name}${bundle.version}">
             <fileset dir="${bundle.path}" defaultexcludes="yes" />
         </copy>
-        <echo message="Insert release version in ${build.tmp.path}/${bundle.name}${bundle.version}/neard.conf..." />
-        <copy file="${bundle.path}/neard.conf" tofile="${build.tmp.path}/${bundle.name}${bundle.version}/neard.conf" overwrite="true">
+        <echo message="Insert release version in ${bundle.tmp.build.path}/${bundle.name}${bundle.version}/neard.conf..." />
+        <copy file="${bundle.path}/neard.conf" tofile="${bundle.tmp.build.path}/${bundle.name}${bundle.version}/neard.conf" overwrite="true">
             <filterset>
                 <filter token="RELEASE_VERSION" value="${bundle.release}" />
             </filterset>
         </copy>
         
         <mkdir dir="${bundle.destdir}" />
-        <mkdir dir="${build.bundle.path}/${bundle.name}" />
+        <mkdir dir="${bundle.release.path}/${bundle.name}" />
         <if>
             <equals arg1="${bundle.format}" arg2="7z" />
             <then>
                 <delete file="${bundle.destfile}.7z" />
                 <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.destfile}.7z..." />
-                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.7z" format="7z" />
+                <sevenzip src="${bundle.tmp.build.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.7z" format="7z" />
                 <hashfile file="${bundle.destfile}.7z" />
             </then>
             <else>
                 <delete file="${bundle.destfile}.zip" />
                 <echo message="Compressing ${bundle.name}${bundle.version} to ${bundle.destfile}.zip..." />
-                <sevenzip src="${build.tmp.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.zip" format="zip" />
+                <sevenzip src="${bundle.tmp.build.path}/${bundle.name}${bundle.version}" dest="${bundle.destfile}.zip" format="zip" />
                 <hashfile file="${bundle.destfile}.zip" />
             </else>
         </if>
     </target>
     
+    <target name="release.build">
+      <basename property="bundle.folder" file="${bundle.path}"/>
+      <replaceproperty src="bundle.folder" dest="bundle.version" replace="${bundle.name}" with=""/>
+      
+      <delete dir="${bundle.tmp.prep.path}/${bundle.folder}"/>
+      <mkdir dir="${bundle.tmp.prep.path}/${bundle.folder}"/>
+      <copy todir="${bundle.tmp.prep.path}/${bundle.folder}">
+        <fileset dir="${bundle.path}" defaultexcludes="yes"/>
+      </copy>
+    </target>
+    
+    <target name="release.one">
+      <var name="bundle.folder" unset="true"/>
+      <basename property="bundle.folder" file="${bundle.path}"/>
+      
+      <antcall target="release.build">
+        <param name="bundle.path" value="${bundle.path}"/>
+      </antcall>
+      
+      <if>
+        <available file="${bundle.tmp.prep.path}/${bundle.folder}" type="dir" />
+        <then>
+          <antcall target="release.version">
+            <param name="bundle.path" value="${bundle.tmp.prep.path}/${bundle.folder}"/>
+          </antcall>
+        </then>
+        <else>
+          <fail message="Bundle folder not found in: ${bundle.tmp.prep.path}/${bundle.folder}"/>
+        </else>
+      </if>
+    </target>
+    
     <target name="release" depends="init, load.lib" description="Release">
-        <input message="Please enter the bundle's name to release (eg. apache2.4.20) or 'all' for every versions: " addproperty="input.bundle" />
-        <if>
-            <equals arg1="${input.bundle}" arg2="all" />
-            <then>
-                <foreach target="build.version" param="bundle.path">
-                    <path><dirset dir="${project.basedir}/bin" includes="*" /></path>
-                </foreach>
-            </then>
-            <elseif>
-                <available file="${project.basedir}/bin/${input.bundle}" type="dir" />
-                <then>
-                    <antcall target="build.version">
-                        <param name="bundle.path" value="${project.basedir}/bin/${input.bundle}" />
-                    </antcall>
-                </then>
-            </elseif>
-            <else>
-                <fail message="Invalid bundle's name"/>
-            </else>
-        </if>
+      <input message="Please enter the ${bundle.name} bundle's version to release or * for all versions: " addproperty="input.bundle"/>
+      <if>
+        <equals arg1="${input.bundle}" arg2="*"/>
+        <then>
+          <foreach target="release.one" param="bundle.path">
+            <path><dirset dir="${project.basedir}/bin" includes="*"/></path>
+          </foreach>
+        </then>
+        <elseif>
+          <available file="${project.basedir}/bin/${bundle.name}${input.bundle}" type="dir"/>
+          <then>
+            <antcall target="release.one">
+              <param name="bundle.path" value="${project.basedir}/bin/${bundle.name}${input.bundle}"/>
+            </antcall>
+          </then>
+        </elseif>
+        <else>
+          <fail message="Invalid bundle's version for ${bundle.name}"/>
+        </else>
+      </if>
     </target>
     
 </project>

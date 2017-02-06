@@ -13,5 +13,4 @@
     
     <!-- Properties -->
     <property name="build.misc.path" value="${build.path}/misc" />
-    <property name="build.tmp.path" value="${build.path}/tmp" />
 </project>
