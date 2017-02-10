@@ -1,378 +1,377 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="neard-dev-commons" basedir=".">
     
-    <tstamp><format property="current.date" pattern="yyyyMMdd" /></tstamp>
-    
-    <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-commons.xml"/>
-    <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-commons.xml"/>
-    
-    <property name="build-commons.properties" value="${neard-dev.path}/build/build-commons.properties" />
-    <echo message="Load build-commons.properties: ${neard-dev.path}/build/build-commons.properties" level="debug" /> 
-    <property file="${build-commons.properties}" />
-    
-    <scriptdef name="randomstring" language="javascript">
-        <attribute name="property" />
-        <![CDATA[
-        importClass(java.security.SecureRandom);
-        importClass(java.math.BigInteger);
-        project.setProperty(attributes.get("property"), new BigInteger(130, new SecureRandom()).toString(32));
-        ]]>
-    </scriptdef>
-    
-    <macrodef name="replaceproperty">
-        <attribute name="src" />
-        <attribute name="dest" default="" />
-        <attribute name="replace" default="" />
-        <attribute name="with" default="" />
-        <sequential>
-            <loadresource property="@{dest}">
-                <propertyresource name="@{src}" />
-                <filterchain>
-                    <tokenfilter>
-                        <filetokenizer/>
-                        <replacestring from="@{replace}" to="@{with}" />
-                    </tokenfilter>
-                </filterchain>
-            </loadresource>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="sevenzip">
-        <attribute name="src" />
-        <attribute name="dest" />
-        <attribute name="format" default="7z" />
-        <sequential>
-            <if>
-                <equals arg1="@{format}" arg2="7z" />
-                <then>
-                    <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
-                        <arg value="a" />
-                        <arg value="-t7z" />
-                        <arg value="@{dest}" />
-                        <arg value="@{src}" />
-                        <arg value="-m0=LZMA2" />
-                        <arg value="-mx9" />
-                        <arg value="-mmt2" />
-                    </exec>
-                </then>
-                <elseif>
-                    <equals arg1="@{format}" arg2="zip" />
-                    <then>
-                        <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
-                            <arg value="a" />
-                            <arg value="-mm=Deflate" />
-                            <arg value="-mfb=258" />
-                            <arg value="-mpass=15" />
-                            <arg value="-r" />
-                            <arg value="@{dest}" />
-                            <arg value="@{src}" />
-                        </exec>
-                    </then>
-                </elseif>
-                <else>
-                    <fail message="Unknown format: @{format}"/>
-                </else>
-            </if>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="unsevenzip">
-        <attribute name="src" />
-        <attribute name="dest" />
-        <sequential>
+  <tstamp><format property="current.date" pattern="yyyyMMdd" /></tstamp>
+  
+  <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-commons.xml" />
+  <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-commons.xml" />
+  
+  <property name="build-commons.properties" value="${neard-dev.path}/build/build-commons.properties" />
+  <echo message="Load build-commons.properties: ${neard-dev.path}/build/build-commons.properties" level="debug" /> 
+  <property file="${build-commons.properties}" />
+  
+  <scriptdef name="randomstring" language="javascript">
+    <attribute name="property" />
+    <![CDATA[
+    importClass(java.security.SecureRandom);
+    importClass(java.math.BigInteger);
+    project.setProperty(attributes.get("property"), new BigInteger(130, new SecureRandom()).toString(32));
+    ]]>
+  </scriptdef>
+  
+  <macrodef name="replaceproperty">
+    <attribute name="src" />
+    <attribute name="dest" default="" />
+    <attribute name="replace" default="" />
+    <attribute name="with" default="" />
+    <sequential>
+      <loadresource property="@{dest}">
+        <propertyresource name="@{src}" />
+        <filterchain>
+          <tokenfilter>
+            <filetokenizer/>
+            <replacestring from="@{replace}" to="@{with}" />
+          </tokenfilter>
+        </filterchain>
+      </loadresource>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="sevenzip">
+    <attribute name="src" />
+    <attribute name="dest" />
+    <attribute name="format" default="7z" />
+    <sequential>
+      <if>
+        <equals arg1="@{format}" arg2="7z" />
+        <then>
+          <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+            <arg value="a" />
+            <arg value="-t7z" />
+            <arg value="@{dest}" />
+            <arg value="@{src}" />
+            <arg value="-m0=LZMA2" />
+            <arg value="-mx9" />
+            <arg value="-mmt2" />
+          </exec>
+        </then>
+        <elseif>
+          <equals arg1="@{format}" arg2="zip" />
+          <then>
             <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
-                <arg value="x" />
-                <arg value="@{src}" />
-                <arg value="-o@{dest}" />
+              <arg value="a" />
+              <arg value="-mm=Deflate" />
+              <arg value="-mfb=258" />
+              <arg value="-mpass=15" />
+              <arg value="-r" />
+              <arg value="@{dest}" />
+              <arg value="@{src}" />
             </exec>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="hashfile">
-        <attribute name="file" />
-        <sequential>
-            <var name="hashfile.filename" unset="true" />
-            <basename property="hashfile.filename" file="@{file}" />
-            <var name="hashfile.xml" value="${tmp.path}/${hashfile.filename}.xml" />
-            
-            <echo message="** Hashfile" />
-            <echo message="* File : @{file}" />
-            <echo message="* XML : ${hashfile.xml}" />
-            
-            <exec executable="${hashmyfiles}" failonerror="true">
-                <arg value="/file" />
-                <arg value="@{file}" />
-                <arg value="/sxml" />
-                <arg value="${hashfile.xml}" />
-            </exec>
-            
-            <fixcrlf file="${hashfile.xml}" eol="lf" encoding="UTF-16LE" outputencoding="UTF-8" />
-            <xmlproperty file="${hashfile.xml}" collapseAttributes="true" />
-            <echo message="* Filename : ${hash_list.item.filename}" />
-            <echo message="* MD5 : ${hash_list.item.md5}" />
-            <echo message="* SHA1 : ${hash_list.item.sha1}" />
-            <echo message="* SHA-256 : ${hash_list.item.sha-256}" />
-            <echo message="* SHA-512 : ${hash_list.item.sha-512}" />
-            <echo file="@{file}.md5" force="true">${hash_list.item.md5} ${hash_list.item.filename}</echo>
-            <echo file="@{file}.sha1" force="true">${hash_list.item.sha1} ${hash_list.item.filename}</echo>
-            <echo file="@{file}.sha256" force="true">${hash_list.item.sha-256} ${hash_list.item.filename}</echo>
-            <echo file="@{file}.sha512" force="true">${hash_list.item.sha-512} ${hash_list.item.filename}</echo>
-        </sequential>
-    </macrodef>
-  
-    <macrodef name="hashfiles">
-        <attribute name="folder" />
-        <sequential>
-            <foreach target="hashfile" param="file">
-              <fileset dir="@{folder}"  excludes="
-                **/*.md5,
-                **/*.sha1,
-                **/*.sha256,
-                **/*.sha512"/>
-            </foreach>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="getbundle">
-        <attribute name="releasesurl" />
-        <attribute name="version" />
-        <attribute name="dest" />
-        <sequential>
-            <echo message="** Getbundle" />
-            <echo message="* Releases url : @{releasesurl}" />
-            <echo message="* Version      : @{version}" />
-            <echo message="* Destination  : @{dest}" />
-            
-            <var name="@{version}" unset="true" />
-            <var name="getbundle.filename" unset="true" />
-            
-            <property url="@{releasesurl}" />
-            <basename property="getbundle.filename" file="${@{version}}" />
-            <get dest="${tmp.path}/${getbundle.filename}" src="${@{version}}" skipexisting="true" />
-            
-            <echo message="Extracting ${getbundle.filename} to @{dest}..." />
-            <if>
-                <matches string="${getbundle.filename}" pattern="7z$" />
-                <then>
-                    <unsevenzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
-                </then>
-                <else>
-                    <unzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
-                </else>
-            </if>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="phpdev">
-        <attribute name="action" />
-        <attribute name="arg" default="" />
-        <attribute name="workingdir" default="${phpdev.path}" />
-        <attribute name="returnProperty" default="" />
-        <sequential>
-            <var name="phpdev.output" unset="true" />
-            <echo message="** PHPDev" />
-            <echo message="* Action : @{action}" />
-            <echo message="* Arg    : @{arg}" />
-            
-            <if>
-                <equals arg1="@{returnProperty}" arg2="" />
-                <then>
-                    <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" failonerror="false">
-                        <arg value="bootstrap.php" />
-                        <arg value="@{action}" />
-                        <arg value="@{arg}" />
-                    </exec>
-                </then>
-                <else>
-                    <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" outputproperty="@{returnProperty}" failonerror="false">
-                        <arg value="bootstrap.php" />
-                        <arg value="@{action}" />
-                        <arg value="@{arg}" />
-                    </exec>
-                    <echo message="${@{returnProperty}}" />
-                </else>
-            </if>
-        </sequential>
-    </macrodef>
-  
-    <macrodef name="composer">
-        <element name="args" />
-        <attribute name="dir" default="${phpdev.path}" />
-        <sequential>
-            <var name="phpdev.output" unset="true" />
-            <exec executable="${tool.php.path}/php.exe" dir="@{dir}" failonerror="true">
-                <arg value="${lib.path}/composer.phar" />
-                <args />
-            </exec>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="assertdir">
-        <attribute name="dir" />
-        <sequential>
-            <fail message="Directory '@{dir}' does not exist">
-                <condition><not><available file="@{dir}" type="dir" /></not></condition>
-            </fail>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="assertfile">
-        <attribute name="file" />
-        <sequential>
-            <fail message="File '@{file}' does not exist">
-                <condition><not><available file="@{file}" type="file" /></not></condition>
-            </fail>
-        </sequential>
-    </macrodef>
-    
-    <!-- Default excludes -->
-    <defaultexcludes add="**/.github" />
-    <defaultexcludes add="**/.github/**" />
-    <defaultexcludes add="**/.idea" />
-    <defaultexcludes add="**/.idea/**" />
-    <defaultexcludes add="**/.settings" />
-    <defaultexcludes add="**/.settings/**" />
-    <defaultexcludes add="**/.buildpath" />
-    <defaultexcludes add="**/.gitattributes" />
-    <defaultexcludes add="**/.gitignore" />
-    <defaultexcludes add="**/.gitkeep" />
-    <defaultexcludes add="**/.project" />
-    <defaultexcludes add="**/.project" />
-    <defaultexcludes add="**/.styleci.yml" />
-    <defaultexcludes add="**/.travis.yml" />
-    
-    <!-- Properties -->
-    <property name="bin.path" value="${neard-dev.path}/${bin.dir}" />
-    <property name="lib.path" value="${neard-dev.path}/${lib.dir}" />
-    <property name="tmp.path" value="${neard-dev.path}/${tmp.dir}" />
-    <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}" />
-    <property name="tools.path" value="${neard-dev.path}/${tools.dir}" />
-    <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}" />
-    <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}" />
-    <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe" />
-    <property name="innosetup.path" location="${lib.path}/innosetup" />
-    <property name="hashmyfiles" location="${lib.path}/hashmyfiles/HashMyFiles.exe" />
-    
-    <target name="init" unless="is.lib.loaded" description="Init">
-        <mkdir dir="${bin.path}" />
-        <mkdir dir="${lib.path}" />
-        <mkdir dir="${tmp.path}" />
-    </target>
-    
-    <target name="load.lib" unless="is.lib.loaded" description="Load libraries" depends="init,
-            load.lib.antcontrib,
-            load.lib.sevenzip,
-            load.lib.innosetup,
-            load.lib.hashmyfiles,
-            load.lib.composer">
-        <var name="is.lib.loaded" value="true" />
-    </target>
-    
-    <target name="load.lib.antcontrib" unless="is.lib.loaded">
-        <echo message="Load ANT Contrib" />
-        <mkdir dir="${lib.path}/ant-contrib" />
-        <get dest="${lib.path}/ant-contrib/ant-contrib.jar" src="${antcontrib.url}" skipexisting="true" />
-        <taskdef resource="net/sf/antcontrib/antlib.xml">
-            <classpath>
-                <fileset dir="${lib.path}/ant-contrib">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
-        </taskdef>
-    </target>
-    
-    <target name="load.lib.sevenzip" unless="is.lib.loaded">
-        <echo message="Load 7zip" />
-        <fail message="Missing 7za.exe file in ${tool.7zip.path}">
-            <condition>
-                <not><available file="${tool.7zip.path}/7za.exe" /></not>
-            </condition>
-        </fail>
-    </target>
-    
-    <target name="load.lib.innoextract" unless="is.lib.loaded">
-        <echo message="Load innoextract"/>
-        <get dest="${lib.path}/innoextract.zip" src="${innoextract.url}" skipexisting="true"/>
-        <if>
-          <not><available file="${lib.path}/innoextract" type="dir" /></not>
-          <then>
-              <unzip src="${lib.path}/innoextract.zip" dest="${lib.path}/innoextract"/>
           </then>
-        </if>
-    </target>
-    
-    <target name="load.lib.innosetup" depends="load.lib.innoextract" unless="is.lib.loaded">
-        <echo message="Load InnoSetup"/>
-        <get dest="${lib.path}/innosetup.exe" src="${innosetup.url}" skipexisting="true"/>
-        <if>
-          <not><available file="${innosetup.path}/app" type="dir" /></not>
-          <then>
-              <exec executable="${innoextract}">
-                  <arg value="-d"/>
-                  <arg value="${innosetup.path}"/>
-                  <arg value="${lib.path}/innosetup.exe"/>
-              </exec>
-          </then>
-        </if>
-        <fail message="File ${innosetup.path}/app/ISCC.exe not found">
-            <condition>
-                <not>
-                    <available file="${innosetup.path}/app/ISCC.exe" />
-                </not>
-            </condition>
-        </fail>
-    </target>
+        </elseif>
+        <else>
+          <fail message="Unknown format: @{format}" />
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
   
-    <target name="load.lib.hashmyfiles" unless="is.lib.loaded">
-        <echo message="Load hashmyfiles"/>
-        <get dest="${lib.path}/hashmyfiles.zip" src="${hashmyfiles.url}" skipexisting="true"/>
-        <if>
-          <not><available file="${lib.path}/hashmyfiles" type="dir" /></not>
-          <then>
-              <unzip src="${lib.path}/hashmyfiles.zip" dest="${lib.path}/hashmyfiles"/>
-          </then>
-        </if>
-        <fail message="File ${hashmyfiles} not found">
-          <condition>
-            <not>
-              <available file="${hashmyfiles}" />
-            </not>
-          </condition>
-        </fail>
-    </target>
-    
-    <target name="load.lib.composer" unless="is.lib.loaded">
-        <echo message="Load Composer"/>
-        <get dest="${lib.path}/composer.phar" src="${composer.url}" skipexisting="true"/>
-        <fail message="File ${lib.path}/composer.phar not found">
-            <condition>
-                <not>
-                    <available file="${lib.path}/composer.phar" />
-                </not>
-            </condition>
-        </fail>
-    </target>
-    
-    <target name="hashfile">
-        <hashfile file="${file}"/>
-    </target>
+  <macrodef name="unsevenzip">
+    <attribute name="src" />
+    <attribute name="dest" />
+    <sequential>
+      <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+        <arg value="x" />
+        <arg value="@{src}" />
+        <arg value="-o@{dest}" />
+      </exec>
+    </sequential>
+  </macrodef>
   
-    <target name="hash.all" depends="hash.apps, hash.bins, hash.tools, hash.releases"/>
+  <macrodef name="hashfile">
+    <attribute name="file" />
+    <sequential>
+      <var name="hashfile.filename" unset="true" />
+      <basename property="hashfile.filename" file="@{file}" />
+      <var name="hashfile.xml" value="${tmp.path}/${hashfile.filename}.xml" />
+      
+      <echo message="** Hashfile" />
+      <echo message="* File : @{file}" />
+      <echo message="* XML : ${hashfile.xml}" />
+      
+      <exec executable="${hashmyfiles}" failonerror="true">
+        <arg value="/file" />
+        <arg value="@{file}" />
+        <arg value="/sxml" />
+        <arg value="${hashfile.xml}" />
+      </exec>
+      
+      <fixcrlf file="${hashfile.xml}" eol="lf" encoding="UTF-16LE" outputencoding="UTF-8" />
+      <xmlproperty file="${hashfile.xml}" collapseAttributes="true" />
+      <echo message="* Filename : ${hash_list.item.filename}" />
+      <echo message="* MD5 : ${hash_list.item.md5}" />
+      <echo message="* SHA1 : ${hash_list.item.sha1}" />
+      <echo message="* SHA-256 : ${hash_list.item.sha-256}" />
+      <echo message="* SHA-512 : ${hash_list.item.sha-512}" />
+      <echo file="@{file}.md5" force="true">${hash_list.item.md5} ${hash_list.item.filename}</echo>
+      <echo file="@{file}.sha1" force="true">${hash_list.item.sha1} ${hash_list.item.filename}</echo>
+      <echo file="@{file}.sha256" force="true">${hash_list.item.sha-256} ${hash_list.item.filename}</echo>
+      <echo file="@{file}.sha512" force="true">${hash_list.item.sha-512} ${hash_list.item.filename}</echo>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="hashfiles">
+    <attribute name="folder" />
+    <sequential>
+      <foreach target="hashfile" param="file">
+        <fileset dir="@{folder}"  excludes="
+          **/*.md5,
+          **/*.sha1,
+          **/*.sha256,
+          **/*.sha512" />
+      </foreach>
+    </sequential>
+  </macrodef>
   
-    <target name="hash.apps" depends="load.lib">
-        <hashfiles folder="${build.path}/apps"/>
-    </target>
+  <macrodef name="getbundle">
+    <attribute name="releasesurl" />
+    <attribute name="version" />
+    <attribute name="dest" />
+    <sequential>
+      <echo message="** Getbundle" />
+      <echo message="* Releases url : @{releasesurl}" />
+      <echo message="* Version      : @{version}" />
+      <echo message="* Destination  : @{dest}" />
+      
+      <var name="@{version}" unset="true" />
+      <var name="getbundle.filename" unset="true" />
+      
+      <property url="@{releasesurl}" />
+      <basename property="getbundle.filename" file="${@{version}}" />
+      <get dest="${tmp.path}/${getbundle.filename}" src="${@{version}}" skipexisting="true" />
+      
+      <echo message="Extracting ${getbundle.filename} to @{dest}..." />
+      <if>
+        <matches string="${getbundle.filename}" pattern="7z$" />
+        <then>
+          <unsevenzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
+        </then>
+        <else>
+          <unzip src="${tmp.path}/${getbundle.filename}" dest="@{dest}" />
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
   
-    <target name="hash.bins" depends="load.lib">
-        <hashfiles folder="${build.path}/bins"/>
-    </target>
+  <macrodef name="phpdev">
+    <attribute name="action" />
+    <attribute name="arg" default="" />
+    <attribute name="workingdir" default="${phpdev.path}" />
+    <attribute name="returnProperty" default="" />
+    <sequential>
+      <var name="phpdev.output" unset="true" />
+      <echo message="** PHPDev" />
+      <echo message="* Action : @{action}" />
+      <echo message="* Arg    : @{arg}" />
+      <if>
+        <equals arg1="@{returnProperty}" arg2="" />
+        <then>
+          <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" failonerror="false">
+            <arg value="bootstrap.php" />
+            <arg value="@{action}" />
+            <arg value="@{arg}" />
+          </exec>
+        </then>
+        <else>
+          <exec executable="${tool.php.path}/php.exe" dir="@{workingdir}" outputproperty="@{returnProperty}" failonerror="false">
+            <arg value="bootstrap.php" />
+            <arg value="@{action}" />
+            <arg value="@{arg}" />
+          </exec>
+          <echo message="${@{returnProperty}}" />
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="composer">
+    <element name="args" />
+    <attribute name="dir" default="${phpdev.path}" />
+    <sequential>
+      <var name="phpdev.output" unset="true" />
+      <exec executable="${tool.php.path}/php.exe" dir="@{dir}" failonerror="true">
+        <arg value="${lib.path}/composer.phar" />
+        <args />
+      </exec>
+    </sequential>
+  </macrodef>
   
-    <target name="hash.tools" depends="load.lib">
-        <hashfiles folder="${build.path}/tools"/>
-    </target>
+  <macrodef name="assertdir">
+    <attribute name="dir" />
+    <sequential>
+      <fail message="Directory '@{dir}' does not exist">
+        <condition><not><available file="@{dir}" type="dir" /></not></condition>
+      </fail>
+    </sequential>
+  </macrodef>
   
-    <target name="hash.releases" depends="load.lib">
-        <hashfiles folder="${build.path}/releases"/>
-    </target>
-    
+  <macrodef name="assertfile">
+    <attribute name="file" />
+    <sequential>
+      <fail message="File '@{file}' does not exist">
+        <condition><not><available file="@{file}" type="file" /></not></condition>
+      </fail>
+    </sequential>
+  </macrodef>
+  
+  <!-- Default excludes -->
+  <defaultexcludes add="**/.github" />
+  <defaultexcludes add="**/.github/**" />
+  <defaultexcludes add="**/.idea" />
+  <defaultexcludes add="**/.idea/**" />
+  <defaultexcludes add="**/.settings" />
+  <defaultexcludes add="**/.settings/**" />
+  <defaultexcludes add="**/.buildpath" />
+  <defaultexcludes add="**/.gitattributes" />
+  <defaultexcludes add="**/.gitignore" />
+  <defaultexcludes add="**/.gitkeep" />
+  <defaultexcludes add="**/.project" />
+  <defaultexcludes add="**/.project" />
+  <defaultexcludes add="**/.styleci.yml" />
+  <defaultexcludes add="**/.travis.yml" />
+  
+  <!-- Properties -->
+  <property name="bin.path" value="${neard-dev.path}/${bin.dir}" />
+  <property name="lib.path" value="${neard-dev.path}/${lib.dir}" />
+  <property name="tmp.path" value="${neard-dev.path}/${tmp.dir}" />
+  <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}" />
+  <property name="tools.path" value="${neard-dev.path}/${tools.dir}" />
+  <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}" />
+  <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}" />
+  <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe" />
+  <property name="innosetup.path" location="${lib.path}/innosetup" />
+  <property name="hashmyfiles" location="${lib.path}/hashmyfiles/HashMyFiles.exe" />
+  
+  <target name="init" unless="is.lib.loaded" description="Init">
+    <mkdir dir="${bin.path}" />
+    <mkdir dir="${lib.path}" />
+    <mkdir dir="${tmp.path}" />
+  </target>
+  
+  <target name="load.lib" unless="is.lib.loaded" description="Load libraries" depends="init,
+      load.lib.antcontrib,
+      load.lib.sevenzip,
+      load.lib.innosetup,
+      load.lib.hashmyfiles,
+      load.lib.composer">
+    <var name="is.lib.loaded" value="true" />
+  </target>
+  
+  <target name="load.lib.antcontrib" unless="is.lib.loaded">
+    <echo message="Load ANT Contrib" />
+    <mkdir dir="${lib.path}/ant-contrib" />
+    <get dest="${lib.path}/ant-contrib/ant-contrib.jar" src="${antcontrib.url}" skipexisting="true" />
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+      <classpath>
+        <fileset dir="${lib.path}/ant-contrib">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+    </taskdef>
+  </target>
+  
+  <target name="load.lib.sevenzip" unless="is.lib.loaded">
+    <echo message="Load 7zip" />
+    <fail message="Missing 7za.exe file in ${tool.7zip.path}">
+      <condition>
+        <not><available file="${tool.7zip.path}/7za.exe" /></not>
+      </condition>
+    </fail>
+  </target>
+  
+  <target name="load.lib.innoextract" unless="is.lib.loaded">
+    <echo message="Load innoextract" />
+    <get dest="${lib.path}/innoextract.zip" src="${innoextract.url}" skipexisting="true" />
+    <if>
+      <not><available file="${lib.path}/innoextract" type="dir" /></not>
+      <then>
+        <unzip src="${lib.path}/innoextract.zip" dest="${lib.path}/innoextract" />
+      </then>
+    </if>
+  </target>
+  
+  <target name="load.lib.innosetup" depends="load.lib.innoextract" unless="is.lib.loaded">
+    <echo message="Load InnoSetup" />
+    <get dest="${lib.path}/innosetup.exe" src="${innosetup.url}" skipexisting="true" />
+    <if>
+      <not><available file="${innosetup.path}/app" type="dir" /></not>
+      <then>
+        <exec executable="${innoextract}">
+          <arg value="-d" />
+          <arg value="${innosetup.path}" />
+          <arg value="${lib.path}/innosetup.exe" />
+        </exec>
+      </then>
+    </if>
+    <fail message="File ${innosetup.path}/app/ISCC.exe not found">
+      <condition>
+        <not>
+          <available file="${innosetup.path}/app/ISCC.exe" />
+        </not>
+      </condition>
+    </fail>
+  </target>
+
+  <target name="load.lib.hashmyfiles" unless="is.lib.loaded">
+    <echo message="Load hashmyfiles" />
+    <get dest="${lib.path}/hashmyfiles.zip" src="${hashmyfiles.url}" skipexisting="true" />
+    <if>
+      <not><available file="${lib.path}/hashmyfiles" type="dir" /></not>
+      <then>
+        <unzip src="${lib.path}/hashmyfiles.zip" dest="${lib.path}/hashmyfiles" />
+      </then>
+    </if>
+    <fail message="File ${hashmyfiles} not found">
+      <condition>
+        <not>
+          <available file="${hashmyfiles}" />
+        </not>
+      </condition>
+    </fail>
+  </target>
+  
+  <target name="load.lib.composer" unless="is.lib.loaded">
+    <echo message="Load Composer" />
+    <get dest="${lib.path}/composer.phar" src="${composer.url}" skipexisting="true" />
+    <fail message="File ${lib.path}/composer.phar not found">
+      <condition>
+        <not>
+          <available file="${lib.path}/composer.phar" />
+        </not>
+      </condition>
+    </fail>
+  </target>
+  
+  <target name="hashfile">
+    <hashfile file="${file}" />
+  </target>
+
+  <target name="hash.all" depends="hash.apps, hash.bins, hash.tools, hash.releases" />
+
+  <target name="hash.apps" depends="load.lib">
+    <hashfiles folder="${build.path}/apps" />
+  </target>
+
+  <target name="hash.bins" depends="load.lib">
+    <hashfiles folder="${build.path}/bins" />
+  </target>
+
+  <target name="hash.tools" depends="load.lib">
+    <hashfiles folder="${build.path}/tools" />
+  </target>
+
+  <target name="hash.releases" depends="load.lib">
+    <hashfiles folder="${build.path}/releases" />
+  </target>
+  
 </project>
