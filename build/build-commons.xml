@@ -19,6 +19,18 @@
     ]]>
   </scriptdef>
   
+  <scriptdef name="versioncompare" language="javascript">
+    <attribute name="arg1"/>
+    <attribute name="arg2"/>
+    <attribute name="returnproperty"/>
+    <![CDATA[
+    importClass(java.lang.Double);
+    var num1 = Double.parseDouble(attributes.get("arg1"));
+    var num2 = Double.parseDouble(attributes.get("arg2"));
+    project.setProperty(attributes.get("returnproperty"), (num1 > num2 ? 1 : (num1 < num2 ? -1 : 0)));
+    ]]>
+  </scriptdef>
+  
   <macrodef name="replaceproperty">
     <attribute name="src" />
     <attribute name="dest" default="" />
