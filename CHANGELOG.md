@@ -1,8 +1,12 @@
 # Changelog
 
+## r10 (2017/02/10)
+
+* Add composer task
+
 ## r9 (2017/01/30)
 
-* Create checksum for downloads (Issue #211)
+* Create checksum for downloads (Issue crazy-max/neard#211)
 * Update bootstrap dev
 * Update default excludes
 * Update libs links
