@@ -194,6 +194,18 @@
             </if>
         </sequential>
     </macrodef>
+  
+    <macrodef name="composer">
+        <element name="args" />
+        <attribute name="dir" default="${phpdev.path}" />
+        <sequential>
+            <var name="phpdev.output" unset="true" />
+            <exec executable="${tool.php.path}/php.exe" dir="@{dir}" failonerror="true">
+                <arg value="${lib.path}/composer.phar" />
+                <args />
+            </exec>
+        </sequential>
+    </macrodef>
     
     <macrodef name="assertdir">
         <attribute name="dir" />
@@ -251,7 +263,8 @@
             load.lib.antcontrib,
             load.lib.sevenzip,
             load.lib.innosetup,
-            load.lib.hashmyfiles">
+            load.lib.hashmyfiles,
+            load.lib.composer">
         <var name="is.lib.loaded" value="true" />
     </target>
     
@@ -327,7 +340,19 @@
           </condition>
         </fail>
     </target>
-  
+    
+    <target name="load.lib.composer" unless="is.lib.loaded">
+        <echo message="Load Composer"/>
+        <get dest="${lib.path}/composer.phar" src="${composer.url}" skipexisting="true"/>
+        <fail message="File ${lib.path}/composer.phar not found">
+            <condition>
+                <not>
+                    <available file="${lib.path}/composer.phar" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+    
     <target name="hashfile">
         <hashfile file="${file}"/>
     </target>
