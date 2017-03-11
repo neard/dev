@@ -1,5 +1,15 @@
 # Changelog
 
+## r11 (2017/03/11)
+
+* Small refactoring
+* Add download macrodef
+* Update PHP to 5.6.29
+* Update defaultexcludes
+* Change tmp path location
+* Add extract msi task
+* Add versioncompare scriptdef
+
 ## r10 (2017/02/10)
 
 * Add composer task
