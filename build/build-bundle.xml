@@ -20,66 +20,69 @@
   <property name="bundle.tmp.prep.path" value="${build.tmp.path}/bundles_prep/${bundle.name}"/>
   <property name="bundle.tmp.src.path" value="${build.tmp.path}/bundles_src"/>
 
-  <macrodef name="getbundlesrc">
+  <macrodef name="getmoduleuntouched">
     <attribute name="name"/>
     <attribute name="version"/>
     <attribute name="propSrcDest"/>
     <attribute name="propSrcFilename"/>
     <sequential>
-      <echo message="** Getbundle Src"/>
+      <echo message="** Get Module Untouched"/>
       <echo message="* Name        : @{name}"/>
       <echo message="* Version     : @{version}"/>
       
       <var name="@{propSrcDest}" unset="true"/>
       <var name="@{propSrcFilename}" unset="true"/>
-      <var name="getbundlesrc.src" unset="true"/>
-      <var name="getbundlesrc.url" unset="true"/>
-      <var name="getbundlesrc.filename" unset="true"/>
-      <var name="getbundlesrc.basename" unset="true"/>
-      <var name="getbundlesrc.folder" unset="true"/>
-      <var name="getbundlesrc.tmp" unset="true"/>
+      <var name="getmu.src" unset="true"/>
+      <var name="getmu.url" unset="true"/>
+      <var name="getmu.filename" unset="true"/>
+      <var name="getmu.basename" unset="true"/>
+      <var name="getmu.folder" unset="true"/>
+      <var name="getmu.tmp" unset="true"/>
       
-      <propertyregex property="getbundlesrc.src" input="${bundle.srcurl}" regexp="@module@" replace="@{name}" global="true"/>
-      <echo message="* Src         : ${getbundlesrc.src}"/>
-      <property url="${getbundlesrc.src}"/>
+      <propertyregex property="getmu.src" input="${module.untouchedurl}" regexp="@module@" replace="@{name}" global="true"/>
+      <echo message="* Src         : ${getmu.src}"/>
+      <property url="${getmu.src}"/>
       
-      <property name="getbundlesrc.url" value="${@{version}}"/>
-      <basename property="getbundlesrc.filename" file="${getbundlesrc.url}"/>
-      <propertyregex property="getbundlesrc.basename" input="${getbundlesrc.filename}" regexp="(.*)\.(.*)" select="\1"/>
-      <property name="getbundlesrc.folder" value="@{name}@{version}"/>
-      <property name="getbundlesrc.tmp" value="${bundle.tmp.src.path}/@{name}"/>
-      <property name="getbundlesrc.dest" value="${getbundlesrc.tmp}/${getbundlesrc.folder}"/>
+      <property name="getmu.url" value="${@{version}}"/>
+      <basename property="getmu.filename" file="${getmu.url}"/>
+      <propertyregex property="getmu.basename" input="${getmu.filename}" regexp="(.*)\.(.*)" select="\1"/>
+      <property name="getmu.folder" value="@{name}@{version}"/>
+      <property name="getmu.tmp" value="${bundle.tmp.src.path}/@{name}"/>
+      <property name="getmu.dest" value="${getmu.tmp}/${getmu.folder}"/>
       
-      <echo message="* Url         : ${getbundlesrc.url}"/>
-      <echo message="* Filename    : ${getbundlesrc.filename}"/>
-      <echo message="* Destination : ${getbundlesrc.dest}"/>
+      <echo message="* Url         : ${getmu.url}"/>
+      <echo message="* Filename    : ${getmu.filename}"/>
+      <echo message="* Destination : ${getmu.dest}"/>
       
-      <delete dir="${getbundlesrc.dest}"/>
-      <mkdir dir="${getbundlesrc.dest}"/>
-      <get dest="${getbundlesrc.tmp}/${getbundlesrc.filename}" src="${getbundlesrc.url}" skipexisting="true"/>
-      <property name="@{propSrcDest}" value="${getbundlesrc.dest}"/>
-      <property name="@{propSrcFilename}" value="${getbundlesrc.filename}"/>
-      <echo message="Processing ${getbundlesrc.filename}..."/>
+      <delete dir="${getmu.dest}"/>
+      <mkdir dir="${getmu.dest}"/>
+      <get dest="${getmu.tmp}/${getmu.filename}" src="${getmu.url}" skipexisting="true"/>
+      <property name="@{propSrcDest}" value="${getmu.dest}"/>
+      <property name="@{propSrcFilename}" value="${getmu.filename}"/>
+      <echo message="Processing ${getmu.filename}..."/>
       <if>
-        <matches string="${getbundlesrc.filename}" pattern="7z$"/>
+        <or>
+          <matches string="${getmu.filename}" pattern="7z$"/>
+          <matches string="${getmu.filename}" pattern="\.7z\.exe$"/>
+        </or>
         <then>
-          <unsevenzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}"/>
+          <unsevenzip src="${getmu.tmp}/${getmu.filename}" dest="${getmu.dest}"/>
         </then>
         <elseif>
-          <matches string="${getbundlesrc.filename}" pattern="zip$"/>
+          <matches string="${getmu.filename}" pattern="zip$"/>
           <then>
-            <unzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}"/>
+            <unzip src="${getmu.tmp}/${getmu.filename}" dest="${getmu.dest}"/>
           </then>
         </elseif>
         <elseif>
-          <matches string="${getbundlesrc.filename}" pattern="tar\.gz$"/>
+          <matches string="${getmu.filename}" pattern="tar\.gz$"/>
           <then>
-            <gunzip src="${getbundlesrc.tmp}/${getbundlesrc.filename}" dest="${getbundlesrc.dest}"/>
-            <untar src="${getbundlesrc.dest}/${getbundlesrc.basename}" dest="${getbundlesrc.dest}"/>
+            <gunzip src="${getmu.tmp}/${getmu.filename}" dest="${getmu.dest}"/>
+            <untar src="${getmu.dest}/${getmu.basename}" dest="${getmu.dest}"/>
           </then>
         </elseif>
         <else>
-          <copy file="${getbundlesrc.tmp}/${getbundlesrc.filename}" todir="${getbundlesrc.dest}"/>
+          <copy file="${getmu.tmp}/${getmu.filename}" todir="${getmu.dest}"/>
         </else>
       </if>
     </sequential>

@@ -147,34 +147,136 @@
     </sequential>
   </macrodef>
   
-  <macrodef name="getbundle">
+  <macrodef name="getmodule">
     <attribute name="releasesurl"/>
     <attribute name="version"/>
     <attribute name="dest"/>
     <sequential>
-      <var name="getbundle.tmp.path" value="${build.tmp.path}/getbundle"/>
-      <mkdir dir="${getbundle.tmp.path}"/>
+      <var name="getm.tmp.path" value="${build.tmp.path}/getmodule"/>
+      <mkdir dir="${getm.tmp.path}"/>
     
-      <echo message="** Getbundle"/>
+      <echo message="** Get Module"/>
       <echo message="* Releases url : @{releasesurl}"/>
       <echo message="* Version      : @{version}"/>
       <echo message="* Destination  : @{dest}"/>
       
       <var name="@{version}" unset="true"/>
-      <var name="getbundle.filename" unset="true"/>
+      <var name="getm.filename" unset="true"/>
       
       <property url="@{releasesurl}"/>
-      <basename property="getbundle.filename" file="${@{version}}"/>
-      <get dest="${getbundle.tmp.path}/${getbundle.filename}" src="${@{version}}" skipexisting="true"/>
+      <basename property="getm.filename" file="${@{version}}"/>
+      <get dest="${getm.tmp.path}/${getm.filename}" src="${@{version}}" skipexisting="true"/>
       
-      <echo message="Extracting ${getbundle.filename} to @{dest}..."/>
+      <echo message="Extracting ${getm.filename} to @{dest}..."/>
       <if>
-        <matches string="${getbundle.filename}" pattern="7z$"/>
+        <matches string="${getm.filename}" pattern="7z$"/>
         <then>
-          <unsevenzip src="${getbundle.tmp.path}/${getbundle.filename}" dest="@{dest}"/>
+          <unsevenzip src="${getm.tmp.path}/${getm.filename}" dest="@{dest}"/>
         </then>
         <else>
-          <unzip src="${getbundle.tmp.path}/${getbundle.filename}" dest="@{dest}"/>
+          <unzip src="${getm.tmp.path}/${getm.filename}" dest="@{dest}"/>
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="download">
+    <attribute name="url"/>
+    <attribute name="skipexisting" default="false"/>
+    <attribute name="returnProperty"/>
+    <sequential>
+      <var name="download.filename" unset="true"/>
+      <var name="download.basename" unset="true"/>
+      <var name="download.archive" unset="true"/>
+      <var name="download.extract" value="true"/>
+      <basename property="download.filename" file="@{url}"/>
+      <propertyregex property="download.basename" input="${download.filename}" regexp="(.*)\.(.*)" select="\1"/>
+      <var name="download.tmp.path" value="${build.tmp.path}/dl"/>
+      <var name="download.extract.path" value="${build.tmp.path}/extract/${download.basename}"/>
+      <mkdir dir="${download.tmp.path}"/>
+      
+      <condition property="download.archive" value="true">
+        <or>
+          <matches string="${download.filename}" pattern="7z$"/>
+          <matches string="${download.filename}" pattern="\.7z\.exe$"/>
+          <matches string="${download.filename}" pattern="zip$"/>
+          <matches string="${download.filename}" pattern="tar\.gz$"/>
+        </or>
+      </condition>
+      
+      <if>
+        <and>
+          <available file="${download.extract.path}" type="dir"/>
+          <istrue value="@{skipexisting}"/>
+        </and>
+        <then>
+          <property name="@{returnProperty}" value="${download.extract.path}"/>
+          <var name="download.extract" value="false"/>
+        </then>
+      </if>
+    
+      <echo message="** Download"/>
+      <echo message="* Url       : @{url}"/>
+      <echo message="* Filename  : ${download.filename}"/>
+      <echo message="* Basename  : ${download.basename}"/>
+      <echo message="* Archive   : ${download.archive}"/>
+      <echo message="* Extract   : ${download.extract}"/>
+      <get dest="${download.tmp.path}/${download.filename}" src="@{url}" skipexisting="true"/>
+      
+      <if>
+        <and>
+          <istrue value="${download.archive}"/>
+        </and>
+        <then>
+          <if>
+            <and>
+              <istrue value="${download.extract}"/>
+              <matches string="${download.filename}" pattern="7z$"/>
+            </and>
+            <then>
+              <echo message="Extracting ${download.filename}..."/>
+              <delete dir="${download.extract.path}"/>
+              <unsevenzip src="${download.tmp.path}/${download.filename}" dest="${download.extract.path}"/>
+            </then>
+            <elseif>
+              <and>
+                <istrue value="${download.extract}"/>
+                <matches string="${download.filename}" pattern="\.7z\.exe$"/>
+              </and>
+              <then>
+                <echo message="Extracting ${download.filename}..."/>
+                <delete dir="${download.extract.path}"/>
+                <unzip src="${download.tmp.path}/${download.filename}" dest="${download.extract.path}"/>
+              </then>
+            </elseif>
+            <elseif>
+              <and>
+                <istrue value="${download.extract}"/>
+                <matches string="${download.filename}" pattern="zip$"/>
+              </and>
+              <then>
+                <echo message="Extracting ${download.filename}..."/>
+                <delete dir="${download.extract.path}"/>
+                <unzip src="${download.tmp.path}/${download.filename}" dest="${download.extract.path}"/>
+              </then>
+            </elseif>
+            <elseif>
+              <and>
+                <istrue value="${download.extract}"/>
+                <matches string="${download.filename}" pattern="tar\.gz$"/>
+              </and>
+              <then>
+                <echo message="Extracting ${download.filename}..."/>
+                <delete dir="${download.extract.path}"/>
+                <gunzip src="${download.tmp.path}/${download.filename}" dest="${download.tmp.path}"/>
+                <untar src="${download.tmp.path}/${download.basename}" dest="${download.extract.path}"/>
+              </then>
+            </elseif>
+          </if>
+          <property name="@{returnProperty}" value="${download.extract.path}"/>
+        </then>
+        <else>
+          <property name="@{returnProperty}" value="${download.tmp.path}/${download.filename}"/>
         </else>
       </if>
     </sequential>
