@@ -1,6 +1,16 @@
-# Neard Development Kit
+<p align="center"><a href="http://neard.io/doc/contribute" target="_blank"><img width="100" src="http://neard.io/img/logo-devkit.png"></a></p>
+<p align="center">Neard Development Kit</p>
 
-This a sub-repo of [Neard project](https://github.com/crazy-max/neard) involving the Development Kit required for everyone who wants to contribute!
+<p align="center">
+  <a href="https://github.com/crazy-max/neard-dev/releases/latest"><img src="https://img.shields.io/github/release/crazy-max/neard-dev.svg?style=flat-square" alt="GitHub release"></a>
+  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6EALX9NDSRBAJ"><img src="https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square" alt="Donate Paypal"></a>
+  <a href="https://flattr.com/submit/auto?user_id=crazymax&url=http://neard.io"><img src="https://img.shields.io/badge/flattr-this-green.svg?style=flat-square" alt="Flattr this!"></a>
+</p>
+
+## About
+
+This a sub-repo of [Neard project](https://github.com/crazy-max/neard) involving the Development Kit required for everyone who wants to contribute!<br />
+Issues must be reported on [Neard repository](https://github.com/crazy-max/neard/issues).
 
 ## Requirements
 
@@ -30,6 +40,7 @@ To check if you have Apache Ant in your path, open a command prompt and type `an
 Apache Ant(TM) version 1.8.4 compiled on May 22 2012
 ```
 
-## Issues
+## License
 
-Issues must be reported on [Neard repository](https://github.com/crazy-max/neard/issues).
+LGPL-3.0. See `LICENSE` for more details.<br />
+Icon credit to [Juliia Osadcha](https://www.iconfinder.com/iconsets/web-ui-3).
