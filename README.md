@@ -1,4 +1,4 @@
-# Neard Dev
+# Neard Development Kit
 
 This a sub-repo of [Neard project](https://github.com/crazy-max/neard) involving the Development Kit required for everyone who wants to contribute!
 
