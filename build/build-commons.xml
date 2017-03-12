@@ -203,6 +203,9 @@
           <matches string="${download.filename}" pattern="tar\.gz$"/>
         </or>
       </condition>
+      <condition property="download.archive" value="false">
+        <not><isset property="${download.archive}"/></not>
+      </condition>
       
       <if>
         <and>
