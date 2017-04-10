@@ -57,7 +57,7 @@
       <if>
         <equals arg1="@{format}" arg2="7z"/>
         <then>
-          <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+          <exec executable="${7za}" failonerror="true">
             <arg value="a"/>
             <arg value="-t7z"/>
             <arg value="@{dest}"/>
@@ -70,7 +70,7 @@
         <elseif>
           <equals arg1="@{format}" arg2="zip"/>
           <then>
-            <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+            <exec executable="${7za}" failonerror="true">
               <arg value="a"/>
               <arg value="-mm=Deflate"/>
               <arg value="-mfb=258"/>
@@ -92,7 +92,7 @@
     <attribute name="src"/>
     <attribute name="dest"/>
     <sequential>
-      <exec executable="${tool.7zip.path}/7za.exe" failonerror="true">
+      <exec executable="${7za}" failonerror="true">
         <arg value="x"/>
         <arg value="@{src}"/>
         <arg value="-o@{dest}"/>
@@ -375,17 +375,16 @@
   <defaultexcludes add="**/.project"/>
   <defaultexcludes add="**/.project"/>
   <defaultexcludes add="**/.styleci.yml"/>
-  <defaultexcludes add="**/.travis.yml"/>
   
   <!-- Properties -->
   <property name="bin.path" value="${neard-dev.path}/${bin.dir}"/>
   <property name="lib.path" value="${neard-dev.path}/${lib.dir}"/>
   <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}"/>
   <property name="tools.path" value="${neard-dev.path}/${tools.dir}"/>
-  <property name="tool.7zip.path" value="${neard-dev.path}/${tool.7zip.dir}"/>
   <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}"/>
   <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe"/>
   <property name="innosetup.path" location="${lib.path}/innosetup"/>
+  <property name="7za" location="${lib.path}/7zipextra/7za.exe"/>
   <property name="hashmyfiles" location="${lib.path}/hashmyfiles/HashMyFiles.exe"/>
   
   <target name="init" unless="is.lib.loaded" description="Init">
@@ -417,9 +416,16 @@
   
   <target name="load.lib.sevenzip" unless="is.lib.loaded">
     <echo message="Load 7zip"/>
-    <fail message="Missing 7za.exe file in ${tool.7zip.path}">
+    <get dest="${lib.path}/7zipextra.zip" src="${7zipextra.url}" skipexisting="true"/>
+    <if>
+      <not><available file="${lib.path}/7zipextra" type="dir"/></not>
+      <then>
+        <unzip src="${lib.path}/7zipextra.zip" dest="${lib.path}/7zipextra"/>
+      </then>
+    </if>
+    <fail message="Missing 7za.exe file in ${lib.path}/7zipextra">
       <condition>
-        <not><available file="${tool.7zip.path}/7za.exe"/></not>
+        <not><available file="${lib.path}/7zipextra/7za.exe"/></not>
       </condition>
     </fail>
   </target>
