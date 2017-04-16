@@ -377,6 +377,7 @@
   <defaultexcludes add="**/.styleci.yml"/>
   
   <!-- Properties -->
+  <property environment="env"/>
   <property name="bin.path" value="${neard-dev.path}/${bin.dir}"/>
   <property name="lib.path" value="${neard-dev.path}/${lib.dir}"/>
   <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}"/>
