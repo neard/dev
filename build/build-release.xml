@@ -14,4 +14,21 @@
   <!-- Properties -->
   <property name="build.release.path" value="${build.path}/releases"/>
   
+  <!-- Release version -->
+  <condition property="release.fullversion" value="${release.version}">
+    <and>
+      <isset property="env.APPVEYOR_BUILD_NUMBER"/>
+      <istrue value="${release.stable}"/>
+    </and>
+  </condition>
+  <condition property="release.fullversion" value="${release.version}.${env.APPVEYOR_BUILD_NUMBER}">
+    <and>
+      <isset property="env.APPVEYOR_BUILD_NUMBER"/>
+      <isfalse value="${release.stable}"/>
+    </and>
+  </condition>
+  <condition property="release.fullversion" value="${release.version}.0-SNAPSHOT">
+    <not><isset property="env.APPVEYOR_BUILD_NUMBER"/></not>
+  </condition>
+  
 </project>
