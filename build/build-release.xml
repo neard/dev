@@ -27,7 +27,7 @@
       <isfalse value="${release.stable}"/>
     </and>
   </condition>
-  <condition property="release.fullversion" value="${release.version}.0-SNAPSHOT">
+  <condition property="release.fullversion" value="${release.version}-SNAPSHOT">
     <not><isset property="env.APPVEYOR_BUILD_NUMBER"/></not>
   </condition>
   
