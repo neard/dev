@@ -365,6 +365,7 @@
   </macrodef>
   
   <!-- Default excludes -->
+  <defaultexcludes add="**/.dev/**"/>
   <defaultexcludes add="**/.github/**"/>
   <defaultexcludes add="**/.idea/**"/>
   <defaultexcludes add="**/.settings/**"/>
@@ -373,8 +374,9 @@
   <defaultexcludes add="**/.gitignore"/>
   <defaultexcludes add="**/.gitkeep"/>
   <defaultexcludes add="**/.project"/>
-  <defaultexcludes add="**/.project"/>
   <defaultexcludes add="**/.styleci.yml"/>
+  <defaultexcludes add="**/appveyor.yml"/>
+  <defaultexcludes add="**/neard*.iml"/>
   
   <!-- Properties -->
   <property environment="env"/>
