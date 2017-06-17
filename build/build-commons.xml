@@ -331,6 +331,9 @@
     <attribute name="file"/>
     <attribute name="dest"/>
     <sequential>
+      <var name="file.basename" unset="true"/>
+      <var name="file.win" unset="true"/>
+      <var name="dest.win" unset="true"/>
       <assertfile file="@{file}"/>
       <basename property="file.basename" file="@{file}"/>
       <propertyregex property="file.win" input="@{file}" regexp="/" replace="\\\\"/>
