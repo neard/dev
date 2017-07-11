@@ -92,10 +92,10 @@
     <attribute name="src"/>
     <attribute name="dest"/>
     <sequential>
-      <exec executable="${7za}" failonerror="true">
+      <mkdir dir="@{dest}"/>
+      <exec executable="${7za}" failonerror="true" dir="@{dest}">
         <arg value="x"/>
         <arg value="@{src}"/>
-        <arg value="-o@{dest}"/>
       </exec>
     </sequential>
   </macrodef>
