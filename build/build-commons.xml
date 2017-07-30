@@ -340,11 +340,10 @@
       <propertyregex property="dest.win" input="@{dest}" regexp="/" replace="\\\\"/>
       
       <echo message="Extracting ${file.basename} to @{dest}..."/>
-      <exec executable="msiexec.exe" failonerror="true">
-        <arg value="/a"/>
+      <exec executable="${lessmsi}" failonerror="true">
+        <arg value="x"/>
         <arg value="${file.win}"/>
-        <arg value="/qn"/>
-        <arg value="TARGETDIR=${dest.win}"/>
+        <arg value="${dest.win}\\"/>
       </exec>
     </sequential>
   </macrodef>
@@ -392,6 +391,7 @@
   <property name="innosetup.path" location="${lib.path}/innosetup"/>
   <property name="7za" location="${lib.path}/7zipextra/7za.exe"/>
   <property name="hashmyfiles" location="${lib.path}/hashmyfiles/HashMyFiles.exe"/>
+  <property name="lessmsi" location="${lib.path}/lessmsi/lessmsi.exe"/>
   
   <target name="init" unless="is.lib.loaded" description="Init">
     <mkdir dir="${bin.path}"/>
@@ -403,7 +403,8 @@
       load.lib.sevenzip,
       load.lib.innosetup,
       load.lib.hashmyfiles,
-      load.lib.composer">
+      load.lib.composer,
+      load.lib.lessmsi">
     <var name="is.lib.loaded" value="true"/>
   </target>
   
@@ -429,11 +430,7 @@
         <unzip src="${lib.path}/7zipextra.zip" dest="${lib.path}/7zipextra"/>
       </then>
     </if>
-    <fail message="Missing 7za.exe file in ${lib.path}/7zipextra">
-      <condition>
-        <not><available file="${lib.path}/7zipextra/7za.exe"/></not>
-      </condition>
-    </fail>
+    <assertfile file="${7za}"/>
   </target>
   
   <target name="load.lib.innoextract" unless="is.lib.loaded">
@@ -460,13 +457,7 @@
         </exec>
       </then>
     </if>
-    <fail message="File ${innosetup.path}/app/ISCC.exe not found">
-      <condition>
-        <not>
-          <available file="${innosetup.path}/app/ISCC.exe"/>
-        </not>
-      </condition>
-    </fail>
+    <assertfile file="${innosetup.path}/app/ISCC.exe"/>
   </target>
 
   <target name="load.lib.hashmyfiles" unless="is.lib.loaded">
@@ -478,25 +469,25 @@
         <unzip src="${lib.path}/hashmyfiles.zip" dest="${lib.path}/hashmyfiles"/>
       </then>
     </if>
-    <fail message="File ${hashmyfiles} not found">
-      <condition>
-        <not>
-          <available file="${hashmyfiles}"/>
-        </not>
-      </condition>
-    </fail>
+    <assertfile file="${hashmyfiles}"/>
   </target>
   
   <target name="load.lib.composer" unless="is.lib.loaded">
     <echo message="Load Composer"/>
     <get dest="${lib.path}/composer.phar" src="${composer.url}" skipexisting="true"/>
-    <fail message="File ${lib.path}/composer.phar not found">
-      <condition>
-        <not>
-          <available file="${lib.path}/composer.phar"/>
-        </not>
-      </condition>
-    </fail>
+    <assertfile file="${lib.path}/composer.phar"/>
+  </target>
+    
+  <target name="load.lib.lessmsi" unless="is.lib.loaded">
+    <echo message="Load lessmsi"/>
+    <get dest="${lib.path}/lessmsi.zip" src="${lessmsi.url}" skipexisting="true"/>
+    <if>
+      <not><available file="${lib.path}/lessmsi" type="dir"/></not>
+      <then>
+        <unzip src="${lib.path}/lessmsi.zip" dest="${lib.path}/lessmsi"/>
+      </then>
+    </if>
+    <assertfile file="${lessmsi}"/>
   </target>
   
   <target name="hashfile">
