@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="neard-dev-bundle" basedir=".">
+<project name="dev-bundle" basedir=".">
   
   <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-bundle.xml"/>
-  <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-bundle.xml"/>
+  <fail unless="dev.path" message="Property 'dev.path' must be setted before loading build-bundle.xml"/>
       
-  <property name="build-bundle.properties" value="${neard-dev.path}/build/build-bundle.properties"/>
-  <echo message="Load build-bundle.properties: ${neard-dev.path}/build/build-bundle.properties" level="debug"/>
+  <property name="build-bundle.properties" value="${dev.path}/build/build-bundle.properties"/>
+  <echo message="Load build-bundle.properties: ${dev.path}/build/build-bundle.properties" level="debug"/>
   <property file="${build-bundle.properties}"/>
   
   <!-- Import build-commons.xml -->

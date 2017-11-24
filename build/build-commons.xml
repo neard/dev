@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="neard-dev-commons" basedir=".">
+<project name="dev-commons" basedir=".">
     
   <tstamp><format property="current.date" pattern="yyyyMMdd"/></tstamp>
   
   <fail unless="project.basedir" message="Property 'project.basedir' must be setted before loading build-commons.xml"/>
-  <fail unless="neard-dev.path" message="Property 'neard-dev.path' must be setted before loading build-commons.xml"/>
+  <fail unless="dev.path" message="Property 'dev.path' must be setted before loading build-commons.xml"/>
   
-  <property name="build-commons.properties" value="${neard-dev.path}/build/build-commons.properties"/>
-  <echo message="Load build-commons.properties: ${neard-dev.path}/build/build-commons.properties" level="debug"/> 
+  <property name="build-commons.properties" value="${dev.path}/build/build-commons.properties"/>
+  <echo message="Load build-commons.properties: ${dev.path}/build/build-commons.properties" level="debug"/> 
   <property file="${build-commons.properties}"/>
   
   <scriptdef name="randomstring" language="javascript">
@@ -382,11 +382,11 @@
   
   <!-- Properties -->
   <property environment="env"/>
-  <property name="bin.path" value="${neard-dev.path}/${bin.dir}"/>
-  <property name="lib.path" value="${neard-dev.path}/${lib.dir}"/>
-  <property name="phpdev.path" value="${neard-dev.path}/${phpdev.dir}"/>
-  <property name="tools.path" value="${neard-dev.path}/${tools.dir}"/>
-  <property name="tool.php.path" value="${neard-dev.path}/${tool.php.dir}"/>
+  <property name="bin.path" value="${dev.path}/${bin.dir}"/>
+  <property name="lib.path" value="${dev.path}/${lib.dir}"/>
+  <property name="phpdev.path" value="${dev.path}/${phpdev.dir}"/>
+  <property name="tools.path" value="${dev.path}/${tools.dir}"/>
+  <property name="tool.php.path" value="${dev.path}/${tool.php.dir}"/>
   <property name="innoextract" location="${lib.path}/innoextract/innoextract.exe"/>
   <property name="innosetup.path" location="${lib.path}/innosetup"/>
   <property name="7za" location="${lib.path}/7zipextra/7za.exe"/>

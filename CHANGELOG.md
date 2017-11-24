@@ -16,7 +16,7 @@
 
 ## r9 (2017/01/30)
 
-* Create checksum for downloads (Issue crazy-max/neard#211)
+* Create checksum for downloads (Issue neard/neard#211)
 * Update bootstrap dev
 * Update default excludes
 * Update libs links

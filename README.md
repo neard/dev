@@ -2,15 +2,15 @@
 <p align="center">Neard Development Kit</p>
 
 <p align="center">
-  <a href="https://github.com/crazy-max/neard-dev/releases/latest"><img src="https://img.shields.io/github/release/crazy-max/neard-dev.svg?style=flat-square" alt="GitHub release"></a>
+  <a href="https://github.com/neard/dev/releases/latest"><img src="https://img.shields.io/github/release/neard/dev.svg?style=flat-square" alt="GitHub release"></a>
   <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6EALX9NDSRBAJ"><img src="https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square" alt="Donate Paypal"></a>
   <a href="https://flattr.com/submit/auto?user_id=crazymax&url=http://neard.io"><img src="https://img.shields.io/badge/flattr-this-green.svg?style=flat-square" alt="Flattr this!"></a>
 </p>
 
 ## About
 
-This a sub-repo of [Neard project](https://github.com/crazy-max/neard) involving the Development Kit required for everyone who wants to contribute!<br />
-Issues must be reported on [Neard repository](https://github.com/crazy-max/neard/issues).
+This a sub-repo of [Neard project](https://github.com/neard/neard) involving the Development Kit required for everyone who wants to contribute!<br />
+Issues must be reported on [Neard repository](https://github.com/neard/neard/issues).
 
 ## Requirements
 
