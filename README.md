@@ -3,8 +3,8 @@
 
 <p align="center">
   <a href="https://github.com/neard/dev/releases/latest"><img src="https://img.shields.io/github/release/neard/dev.svg?style=flat-square" alt="GitHub release"></a>
+  <a href="https://beerpay.io/neard/neard"><img src="https://img.shields.io/beerpay/neard/neard.svg?style=flat-square" alt="Beerpay"></a>
   <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6EALX9NDSRBAJ"><img src="https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square" alt="Donate Paypal"></a>
-  <a href="https://flattr.com/submit/auto?user_id=crazymax&url=http://neard.io"><img src="https://img.shields.io/badge/flattr-this-green.svg?style=flat-square" alt="Flattr this!"></a>
 </p>
 
 ## About
