@@ -1,4 +1,4 @@
-<p align="center"><a href="http://neard.io/doc/contribute" target="_blank"><img width="100" src="http://neard.io/img/logo-devkit.png"></a></p>
+<p align="center"><a href="https://neard.io/doc/contribute" target="_blank"><img width="100" src="https://neard.io/img/logo-devkit.png"></a></p>
 <p align="center">Neard Development Kit</p>
 
 <p align="center">
