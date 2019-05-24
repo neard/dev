@@ -15,30 +15,17 @@
   <property name="build.release.path" value="${build.path}/releases"/>
   
   <!-- Version -->
-  <condition property="release.version" value="${env.TRAVIS_TAG}"><isset property="env.TRAVIS_TAG"/></condition>
-  <condition property="release.version" value="${release.default.version}"><not><isset property="release.version"/></not></condition>
-  
-  <!-- Build number -->
-  <condition property="release.buildnumber" value="${env.TRAVIS_BUILD_NUMBER}"><isset property="env.TRAVIS_BUILD_NUMBER"/></condition>
-  <condition property="release.buildnumber" value="0"><not><isset property="release.buildnumber"/></not></condition>
-  
-  <!-- Full version -->
-  <condition property="release.fullversion" value="${release.version}">
-    <isset property="release.version"/>
+  <condition property="release.fullversion" value="${env.TRAVIS_TAG}">
+    <isset property="env.TRAVIS_TAG"/>
   </condition>
-  <condition property="release.fullversion" value="${release.version}.${release.buildnumber}">
-    <isset property="env.TRAVIS_BUILD_NUMBER"/>
-  </condition>
-  <condition property="release.fullversion" value="${release.version}-SNAPSHOT">
-    <not>
+  <condition property="release.fullversion" value="${release.default.version}.${env.TRAVIS_BUILD_NUMBER}">
+    <and>
+      <not><isset property="env.TRAVIS_TAG"/></not>
       <isset property="env.TRAVIS_BUILD_NUMBER"/>
-    </not>
+    </and>
   </condition>
-    
-  <echo message="** Release infos"/>
-  <echo message="* Travis tag     : ${env.TRAVIS_TAG}"/>
-  <echo message="* Version        : ${release.version}"/>
-  <echo message="* Build number   : ${release.buildnumber}"/>
-  <echo message="* Full version   : ${release.fullversion}"/>
+  <condition property="release.fullversion" value="${release.default.version}-SNAPSHOT">
+    <not><isset property="env.TRAVIS_BUILD_NUMBER"/></not>
+  </condition>
   
 </project>
