@@ -57,15 +57,32 @@
       <if>
         <equals arg1="@{format}" arg2="7z"/>
         <then>
-          <exec executable="${7za}" failonerror="true">
-            <arg value="a"/>
-            <arg value="-t7z"/>
-            <arg value="@{dest}"/>
-            <arg value="@{src}"/>
-            <arg value="-m0=LZMA2"/>
-            <arg value="-mx9"/>
-            <arg value="-mmt2"/>
-          </exec>
+          <if>
+            <isset property="env.TRAVIS_BUILD_NUMBER"/>
+            <then>
+              <exec executable="travis_wait" failonerror="true">
+                <arg value="${7za}"/>
+                <arg value="a"/>
+                <arg value="-t7z"/>
+                <arg value="@{dest}"/>
+                <arg value="@{src}"/>
+                <arg value="-m0=LZMA2"/>
+                <arg value="-mx9"/>
+                <arg value="-mmt2"/>
+              </exec>
+            </then>
+            <else>
+              <exec executable="${7za}" failonerror="true">
+                <arg value="a"/>
+                <arg value="-t7z"/>
+                <arg value="@{dest}"/>
+                <arg value="@{src}"/>
+                <arg value="-m0=LZMA2"/>
+                <arg value="-mx9"/>
+                <arg value="-mmt2"/>
+              </exec>
+            </else>
+          </if>
         </then>
         <elseif>
           <equals arg1="@{format}" arg2="zip"/>
