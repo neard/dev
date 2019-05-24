@@ -24,7 +24,7 @@
   
   <!-- Full version -->
   <condition property="release.fullversion" value="${release.version}">
-    <isset property="env.TRAVIS_TAG"/>
+    <isset property="release.version"/>
   </condition>
   <condition property="release.fullversion" value="${release.version}.${release.buildnumber}">
     <isset property="env.TRAVIS_BUILD_NUMBER"/>
