@@ -34,5 +34,11 @@
       <isset property="env.TRAVIS_BUILD_NUMBER"/>
     </not>
   </condition>
+    
+  <echo message="** Release infos"/>
+  <echo message="* Travis tag     : ${env.TRAVIS_TAG}"/>
+  <echo message="* Version        : ${release.version}"/>
+  <echo message="* Build number   : ${release.buildnumber}"/>
+  <echo message="* Full version   : ${release.fullversion}"/>
   
 </project>
