@@ -15,18 +15,27 @@
   <property name="build.release.path" value="${build.path}/releases"/>
   
   <!-- Version -->
-  <condition property="release.fullversion" value="${env.TRAVIS_TAG}">
+  <condition property="release.version" value="${env.TRAVIS_TAG}">
     <and>
       <isset property="env.TRAVIS_TAG"/>
       <not><equals arg1="${env.TRAVIS_TAG}" arg2=""/></not>
     </and>
   </condition>
-  <condition property="release.fullversion" value="${release.default.version}.${env.TRAVIS_BUILD_NUMBER}">
+  <condition property="release.version" value="${release.default.version}.${env.TRAVIS_BUILD_NUMBER}">
     <and>
       <isset property="env.TRAVIS_BUILD_NUMBER"/>
       <not><equals arg1="${env.TRAVIS_BUILD_NUMBER}" arg2=""/></not>
     </and>
   </condition>
-  <property name="release.fullversion" value="${release.default.version}-SNAPSHOT"/>
+  <property name="release.version" value="${release.default.version}-SNAPSHOT"/>
+  <loadresource property="release.fullversion">
+    <propertyresource name="release.version"/>
+    <filterchain>
+      <tokenfilter>
+        <filetokenizer/>
+        <replacestring from="v" to=""/>
+      </tokenfilter>
+    </filterchain>
+  </loadresource>
   
 </project>
