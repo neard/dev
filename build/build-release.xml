@@ -16,16 +16,17 @@
   
   <!-- Version -->
   <condition property="release.fullversion" value="${env.TRAVIS_TAG}">
-    <isset property="env.TRAVIS_TAG"/>
+    <and>
+      <isset property="env.TRAVIS_TAG"/>
+      <not><equals arg1="${env.TRAVIS_TAG}" arg2=""/></not>
+    </and>
   </condition>
   <condition property="release.fullversion" value="${release.default.version}.${env.TRAVIS_BUILD_NUMBER}">
     <and>
-      <not><isset property="env.TRAVIS_TAG"/></not>
       <isset property="env.TRAVIS_BUILD_NUMBER"/>
+      <not><equals arg1="${env.TRAVIS_BUILD_NUMBER}" arg2=""/></not>
     </and>
   </condition>
-  <condition property="release.fullversion" value="${release.default.version}-SNAPSHOT">
-    <not><isset property="env.TRAVIS_BUILD_NUMBER"/></not>
-  </condition>
+  <property name="release.fullversion" value="${release.default.version}-SNAPSHOT"/>
   
 </project>
