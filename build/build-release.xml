@@ -16,7 +16,7 @@
   
   <!-- Version -->
   <condition property="release.version" value="${env.TRAVIS_TAG}"><isset property="env.TRAVIS_TAG"/></condition>
-  <condition property="release.version" value="${release.default.version}"><not><isset property="app.version"/></not></condition>
+  <condition property="release.version" value="${release.default.version}"><not><isset property="release.version"/></not></condition>
   
   <!-- Build number -->
   <condition property="release.buildnumber" value="${env.TRAVIS_BUILD_NUMBER}"><isset property="env.TRAVIS_BUILD_NUMBER"/></condition>
