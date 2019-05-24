@@ -377,7 +377,7 @@
   <defaultexcludes add="**/.gitkeep"/>
   <defaultexcludes add="**/.project"/>
   <defaultexcludes add="**/.styleci.yml"/>
-  <defaultexcludes add="**/appveyor.yml"/>
+  <defaultexcludes add="**/.travis.yml"/>
   <defaultexcludes add="**/neard*.iml"/>
   
   <!-- Properties -->

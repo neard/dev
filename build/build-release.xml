@@ -14,21 +14,25 @@
   <!-- Properties -->
   <property name="build.release.path" value="${build.path}/releases"/>
   
-  <!-- Release version -->
+  <!-- Version -->
+  <condition property="release.version" value="${env.TRAVIS_TAG}"><isset property="env.TRAVIS_TAG"/></condition>
+  <condition property="release.version" value="${release.default.version}"><not><isset property="app.version"/></not></condition>
+  
+  <!-- Build number -->
+  <condition property="release.buildnumber" value="${env.TRAVIS_BUILD_NUMBER}"><isset property="env.TRAVIS_BUILD_NUMBER"/></condition>
+  <condition property="release.buildnumber" value="0"><not><isset property="release.buildnumber"/></not></condition>
+  
+  <!-- Full version -->
   <condition property="release.fullversion" value="${release.version}">
-    <and>
-      <isset property="env.APPVEYOR_BUILD_NUMBER"/>
-      <istrue value="${release.stable}"/>
-    </and>
+    <isset property="env.TRAVIS_TAG"/>
   </condition>
-  <condition property="release.fullversion" value="${release.version}.${env.APPVEYOR_BUILD_NUMBER}">
-    <and>
-      <isset property="env.APPVEYOR_BUILD_NUMBER"/>
-      <isfalse value="${release.stable}"/>
-    </and>
+  <condition property="release.fullversion" value="${release.version}.${release.buildnumber}">
+    <isset property="env.TRAVIS_BUILD_NUMBER"/>
   </condition>
   <condition property="release.fullversion" value="${release.version}-SNAPSHOT">
-    <not><isset property="env.APPVEYOR_BUILD_NUMBER"/></not>
+    <not>
+      <isset property="env.TRAVIS_BUILD_NUMBER"/>
+    </not>
   </condition>
   
 </project>
