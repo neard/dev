@@ -14,30 +14,27 @@ Issues must be reported on [Neard repository](https://github.com/neard/neard/iss
 
 ## Requirements
 
-### Java SE Development Kit
+### OpenJDK
 
-The JDK includes tools useful for developing and testing programs written in the Java programming language and running on the Java platform.<br />
-You need at least the JDK 1.7.0_25 (7u25).<br />
-You can download the Java SE Development Kit on the [Oracle website](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html).<br />
-Add the path to `java.exe` (eg. `C:\Program Files\Java\jdk1.7.0\bin`) to your environment variable PATH.<br />
+You need OpenJDK 11 that you can download [here](https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip){:target="_blank"}.<br />
+Extract the archive on your computer (eg. `C:\jdk`) and add the path to `java.exe` (eg. `C:\jdk\bin`) to your environment variable PATH.<br />
 To check if you have Java in your path, open a command prompt and type `java -version` :
 
 ```text
-java version "1.7.0_79"
-Java(TM) SE Runtime Environment (build 1.7.0_79-b15)
-Java HotSpot(TM) Client VM (build 24.79-b02, mixed mode, sharing)
+openjdk version "11.0.2" 2019-01-15
+OpenJDK Runtime Environment 18.9 (build 11.0.2+9)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.2+9, mixed mode)
 ```
 
-## Apache Ant
+### Apache Ant
 
-[Apache Ant](http://ant.apache.org/) is a Java library and command-line tool that help building software.<br />
-You need at least Apache Ant 1.8.0.<br />
-You can download the binary zip archive of Apache Ant on the [Apache website](http://ant.apache.org/bindownload.cgi).<br />
+[Apache Ant](https://ant.apache.org/){:target="_blank"} is used with the OpenJDK to build and package the portapp.<br />
+You need at least Apache Ant 1.10.5 that you can download on the [Apache website](https://ant.apache.org/bindownload.cgi){:target="_blank"}.<br />
 Extract the archive on your computer (eg. `C:\apache-ant`) and add the path to `ant.bat` (eg. `C:\apache-ant\bin`) to your environment variable PATH.<br />
 To check if you have Apache Ant in your path, open a command prompt and type `ant -version` :
 
 ```text
-Apache Ant(TM) version 1.8.4 compiled on May 22 2012
+Apache Ant(TM) version 1.10.5 compiled on July 10 2018
 ```
 
 ## License
