@@ -16,7 +16,7 @@ Issues must be reported on [Neard repository](https://github.com/neard/neard/iss
 
 ### OpenJDK
 
-You need OpenJDK 11 that you can download [here](https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip){:target="_blank"}.<br />
+You need OpenJDK 11 that you can download [here](https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip).<br />
 Extract the archive on your computer (eg. `C:\jdk`) and add the path to `java.exe` (eg. `C:\jdk\bin`) to your environment variable PATH.<br />
 To check if you have Java in your path, open a command prompt and type `java -version` :
 
@@ -28,8 +28,8 @@ OpenJDK 64-Bit Server VM 18.9 (build 11.0.2+9, mixed mode)
 
 ### Apache Ant
 
-[Apache Ant](https://ant.apache.org/){:target="_blank"} is used with the OpenJDK to build and package the portapp.<br />
-You need at least Apache Ant 1.10.5 that you can download on the [Apache website](https://ant.apache.org/bindownload.cgi){:target="_blank"}.<br />
+[Apache Ant](https://ant.apache.org/) is used with the OpenJDK to build and package the portapp.<br />
+You need at least Apache Ant 1.10.5 that you can download on the [Apache website](https://ant.apache.org/bindownload.cgi).<br />
 Extract the archive on your computer (eg. `C:\apache-ant`) and add the path to `ant.bat` (eg. `C:\apache-ant\bin`) to your environment variable PATH.<br />
 To check if you have Apache Ant in your path, open a command prompt and type `ant -version` :
 
