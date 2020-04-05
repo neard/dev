@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.1.0 (2020/04/05)
+
+* Replace Console with ConsoleZ (neard/neard#406)
+* Fix ant-contrib download link
+
 ## 5.0.1 (2019/05/25)
 
 * Update ant-contrib url
@@ -12,20 +17,20 @@
 ## 4.1.0 (2017/12/28)
 
 * Revert build path
-* Add ngrok module (Issue crazy-max/neard#334)
+* Add ngrok module (neard/neard#334)
 
 ## 4.0.0 (2017/11/24)
 
-* Move neard repositories to its own organization (Issue crazy-max/neard#339)
-* Remove HostsEditor module (add in core instead) (Issue crazy-max/neard#329)
+* Move neard repositories to its own organization (neard/neard#339)
+* Remove HostsEditor module (add in core instead) (neard/neard#329)
 
 ## 3.8.0 (2017/09/03)
 
-* Remove ImageMagick (Issue crazy-max/neard#322)
+* Remove ImageMagick (neard/neard#322)
 
 ## 3.7.0 (2017/09/01)
 
-* Remove Notepad2-mod (Issue crazy-max/neard#314)
+* Remove Notepad2-mod (neard/neard#314)
 
 ## 3.6.1 (2017/07/30)
 
@@ -33,7 +38,7 @@
 
 ## 3.6.0 (2017/07/23)
 
-* Add Ghostscript module (Issue crazy-max/ghostscript#220)
+* Add Ghostscript module (neard/ghostscript#220)
 
 ## 3.5.0 (2017/07/15)
 
@@ -42,7 +47,7 @@
 ## 3.4.0 (2017/07/11)
 
 * More efficient 7zip extract command
-* Add Perl module (Issue crazy-max/neard#155)
+* Add Perl module (neard/neard#155)
 
 ## 3.3.1 (2017/06/20)
 
@@ -50,7 +55,7 @@
 
 ## 3.3.0 (2017/06/18)
 
-* Add Yarn module (Issue crazy-max/neard#157)
+* Add Yarn module (neard/neard#157)
 
 ## 3.2.3 (2017/06/17)
 
@@ -67,8 +72,8 @@
 ## 3.2.0 (2017/04/16)
 
 * Load environment variables through Ant property
-* Do not use minor when building snapshot release (Issue crazy-max/neard#247)
-* Review versioning style (Issue crazy-max/neard#247)
+* Do not use minor when building snapshot release (neard/neard#247)
+* Review versioning style (neard/neard#247)
 
 ## 3.1.0 (2017/04/10)
 
