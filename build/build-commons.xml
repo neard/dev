@@ -347,6 +347,15 @@
       </exec>
     </sequential>
   </macrodef>
+
+  <macrodef name="assertproperty">
+    <attribute name="property"/>
+    <sequential>
+      <fail message="Property '@{property}' not setted">
+        <condition><not><isset property="@{property}"/></not></condition>
+      </fail>
+    </sequential>
+  </macrodef>
   
   <macrodef name="assertdir">
     <attribute name="dir"/>

@@ -13,6 +13,40 @@
   
   <!-- Properties -->
   <property name="build.release.path" value="${build.path}/releases"/>
+
+  <!-- Check bins version -->
+  <assertproperty property="bin.apache.version"/>
+  <assertproperty property="bin.filezilla.version"/>
+  <assertproperty property="bin.mailhog.version"/>
+  <assertproperty property="bin.mariadb.version"/>
+  <assertproperty property="bin.memcached.version"/>
+  <assertproperty property="bin.mongodb.version"/>
+  <assertproperty property="bin.mysql.version"/>
+  <assertproperty property="bin.nodejs.version"/>
+  <assertproperty property="bin.php.version"/>
+  <assertproperty property="bin.postgresql.version"/>
+  <assertproperty property="bin.svn.version"/>
+
+  <!-- Check apps version -->
+  <assertproperty property="app.adminer.version"/>
+  <assertproperty property="app.gitlist.version"/>
+  <assertproperty property="app.phpmemadmin.version"/>
+  <assertproperty property="app.phpmyadmin.version"/>
+  <assertproperty property="app.phppgadmin.version"/>
+  <assertproperty property="app.webgrind.version"/>
+  <assertproperty property="app.websvn.version"/>
+
+  <!-- Check tools version -->
+  <assertproperty property="tool.composer.version"/>
+  <assertproperty property="tool.consolez.version"/>
+  <assertproperty property="tool.ghostscript.version"/>
+  <assertproperty property="tool.git.version"/>
+  <assertproperty property="tool.ngrok.version"/>
+  <assertproperty property="tool.perl.version"/>
+  <assertproperty property="tool.python.version"/>
+  <assertproperty property="tool.ruby.version"/>
+  <assertproperty property="tool.xdc.version"/>
+  <assertproperty property="tool.yarn.version"/>
   
   <!-- Version -->
   <condition property="release.version" value="${env.TRAVIS_TAG}">
