@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.2.0 (2020/04/19)
+
+* Remove Drush, PhpMetrics, PHPUnit and WP-CLI modules (neard/neard#453)
+* Update libs
+
 ## 5.1.0 (2020/04/05)
 
 * Replace Console with ConsoleZ (neard/neard#406)
