@@ -49,16 +49,16 @@
   <assertproperty property="tool.yarn.version"/>
   
   <!-- Version -->
-  <condition property="release.version" value="${env.TRAVIS_TAG}">
+  <condition property="release.version" value="${env.GITHUB_TAGNAME}">
     <and>
-      <isset property="env.TRAVIS_TAG"/>
-      <not><equals arg1="${env.TRAVIS_TAG}" arg2=""/></not>
+      <isset property="env.GITHUB_TAGNAME"/>
+      <not><equals arg1="${env.GITHUB_TAGNAME}" arg2=""/></not>
     </and>
   </condition>
-  <condition property="release.version" value="${release.default.version}.${env.TRAVIS_BUILD_NUMBER}">
+  <condition property="release.version" value="${release.default.version}.${env.GITHUB_RUN_NUMBER}">
     <and>
-      <isset property="env.TRAVIS_BUILD_NUMBER"/>
-      <not><equals arg1="${env.TRAVIS_BUILD_NUMBER}" arg2=""/></not>
+      <isset property="env.GITHUB_RUN_NUMBER"/>
+      <not><equals arg1="${env.GITHUB_RUN_NUMBER}" arg2=""/></not>
     </and>
   </condition>
   <property name="release.version" value="${release.default.version}-SNAPSHOT"/>

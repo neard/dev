@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.0 (2020/12/13)
+
+* Switch to GitHub Actions (neard/neard#470)
+
 ## 5.2.0 (2020/04/19)
 
 * Remove Drush, PhpMetrics, PHPUnit and WP-CLI modules (neard/neard#453)
